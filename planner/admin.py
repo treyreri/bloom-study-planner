@@ -1,3 +1,7 @@
 from django.contrib import admin
+from .models import MonthPlan, Task, Quote
 
-# Register your models here.
+
+admin.site.register(MonthPlan)
+admin.site.register(Task)
+admin.site.register(Quote)

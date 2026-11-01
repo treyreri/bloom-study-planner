@@ -1,3 +1,4 @@
 from django.db import models
 
-# Create your models here.
+# Django MVT pages will use models
+# from the other Bloom applications.
