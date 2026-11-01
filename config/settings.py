@@ -27,8 +27,15 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # DRF
     'rest_framework',
-    # приложения
+    # Bloom applications
     'accounts',
+    'planner',
+    'study',
+    'habits',
+    'focus',
+    'diary',
+    'api',
+    'web',
 ]
 
 MIDDLEWARE = [
