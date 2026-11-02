@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Bloom — shared helpers (ported 1:1 from the old static/js/api.js):
+   Bloom — shared helpers (ported 1:1 from the former vanilla-JS helpers):
    toasts, confetti, dates in the server's "today", Russian plurals,
    and the shared vocabulary (priorities, kinds, flower stages).
    ========================================================================== */

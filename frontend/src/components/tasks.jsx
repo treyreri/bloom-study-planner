@@ -1,6 +1,6 @@
 /* ==========================================================================
    Tasks: shared task components (used on Today, Month and Tasks pages).
-   Ported from the old static/js/tasks.js with the same markup.
+   Ported 1:1 from the former vanilla-JS tasks code (same markup).
    ========================================================================== */
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import { api, getAll } from '../api/client.js';

@@ -45,7 +45,6 @@ INSTALLED_APPS = [
     'focus',
     'diary',
     'api',
-    'web',
 ]
 
 MIDDLEWARE = [
@@ -63,14 +62,13 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],
+        'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'web.context_processors.navigation',
             ],
         },
     },
@@ -107,10 +105,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-LOGIN_URL = 'login'
-LOGIN_REDIRECT_URL = 'today'
-LOGOUT_REDIRECT_URL = 'home'
-
 
 # Internationalization
 
@@ -124,10 +118,10 @@ USE_I18N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images) and uploaded media (avatars)
+# Static files of the admin and Swagger (the website itself is the React app
+# in frontend/) and uploaded media (avatars)
 
 STATIC_URL = 'static/'
-STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 MEDIA_URL = 'media/'
@@ -144,9 +138,8 @@ MAILERS = {
 
 
 # Django REST Framework
-# JWT is used by API clients (Swagger, Postman, mobile apps).
-# The website itself uses the Django session cookie + CSRF token,
-# so no tokens are ever stored in the browser's JavaScript.
+# JWT is used by the React website and by API clients (Swagger, Postman).
+# Session authentication remains for the browsable admin login / Swagger.
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [

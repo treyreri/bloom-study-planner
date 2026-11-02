@@ -1,6 +1,6 @@
 /*
   Login / registration card. The fields, help texts and error lists are the
-  same markup Django rendered before (templates/web/_form_fields.html), and
+  same markup the former Django template rendered for these forms, and
   the errors come from the same Django forms (api/v1/auth/form-login and form-register).
 */
 import { useEffect, useRef, useState } from 'react';

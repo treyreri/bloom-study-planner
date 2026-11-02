@@ -1,5 +1,4 @@
 from django.contrib.auth import get_user_model
-from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
@@ -125,33 +124,6 @@ class ProfileTests(APITestCase):
     def test_invalid_accent_color(self):
         response = self.client.patch('/api/v1/profile/', {'accent_color': 'black'})
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
-
-class WebAuthTests(APITestCase):
-    """The website uses Django sessions: register, log in, log out."""
-
-    def test_register_page_creates_account_and_logs_in(self):
-        response = self.client.post(reverse('register'), {
-            'username': 'alice', 'password1': PASSWORD, 'password2': PASSWORD})
-        self.assertRedirects(response, reverse('today'), fetch_redirect_response=False)
-        self.assertTrue(User.objects.filter(username='alice').exists())
-        self.assertEqual(self.client.get(reverse('today')).status_code, 200)
-
-    def test_login_and_logout(self):
-        User.objects.create_user('alice', password=PASSWORD)
-        response = self.client.post(reverse('login'), {'username': 'alice', 'password': PASSWORD})
-        self.assertRedirects(response, reverse('today'), fetch_redirect_response=False)
-
-        response = self.client.post(reverse('logout'))
-        self.assertRedirects(response, reverse('home'), fetch_redirect_response=False)
-        response = self.client.get(reverse('today'))
-        self.assertEqual(response.status_code, 302)
-
-    def test_app_pages_require_login(self):
-        for name in ['today', 'month', 'tasks', 'study', 'habits', 'focus', 'diary', 'garden', 'profile']:
-            response = self.client.get(reverse(name))
-            self.assertEqual(response.status_code, 302, name)
-            self.assertIn(reverse('login'), response['Location'])
 
 
 class FormAuthApiTests(APITestCase):
