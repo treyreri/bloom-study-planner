@@ -1,0 +1,19 @@
+# Backend image: only the Django project
+.git
+.venv
+venv
+env
+**/__pycache__
+*.py[cod]
+.env
+.env.*
+*.sqlite3
+db.sqlite3
+media
+staticfiles
+frontend
+nginx
+docs
+.vscode
+Dockerfile
+docker-compose.yml
