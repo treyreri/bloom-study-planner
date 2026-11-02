@@ -50,12 +50,14 @@ class ProfileSerializer(serializers.ModelSerializer):
         source='user.email', read_only=True)
     first_name = serializers.CharField(
         source='user.first_name', required=False, allow_blank=True, max_length=150)
+    # read-only: lets the website show staff-only parts; cannot be changed through the API
+    is_staff = serializers.BooleanField(source='user.is_staff', read_only=True)
     class Meta:
         model = Profile
         fields = [
             'id', 'username',
             'email', 'first_name', 'avatar',
-            'accent_color', 'semester_goal', ]
+            'accent_color', 'semester_goal', 'is_staff', ]
         read_only_fields = ['id']
 
     def validate_avatar(self, avatar):

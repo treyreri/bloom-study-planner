@@ -92,15 +92,19 @@ export default function Profile() {
           </form>
         </section>
 
-        <section className="panel" aria-labelledby="api-title">
-          <h2 id="api-title">Для разработчиков</h2>
-          <p>У Bloom есть REST API с документацией Swagger.</p>
-          <p><a className="btn secondary" href="/api/docs/">Открыть Swagger</a></p>
-          <p className="small muted">
-            Чтобы попробовать API в Swagger: выполни <code>POST /api/v1/auth/token/</code> со своим
-            логином и паролем, нажми «Authorize» и вставь значение <code>access</code>.
-          </p>
-        </section>
+        {/* staff only (is_staff from GET /api/v1/profile/) */}
+        {profile?.is_staff && (
+          <section className="panel" aria-labelledby="api-title">
+            <h2 id="api-title">Для разработчиков</h2>
+            <p>У Bloom есть REST API с документацией Swagger.</p>
+            <p><a className="btn secondary" href="/api/docs/">Открыть Swagger</a></p>
+            <p className="small muted">
+              Чтобы попробовать API в Swagger: выполни <code>POST /api/v1/auth/token/</code> со своим
+              логином и паролем, нажми «Authorize» и вставь значение <code>access</code> из ответа
+              (слово Bearer Swagger добавит сам).
+            </p>
+          </section>
+        )}
       </div>
     </>
   );

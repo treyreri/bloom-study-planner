@@ -121,6 +121,19 @@ class ProfileTests(APITestCase):
         self.user.refresh_from_db()
         self.assertEqual(self.user.username, 'alice')
 
+    def test_is_staff_is_returned_and_read_only(self):
+        response = self.client.get('/api/v1/profile/')
+        self.assertIs(response.data['is_staff'], False)
+        response = self.client.patch('/api/v1/profile/', {'is_staff': True}, format='json')
+        self.assertIs(response.data['is_staff'], False)
+        self.user.refresh_from_db()
+        self.assertFalse(self.user.is_staff)
+
+    def test_is_staff_true_for_staff_user(self):
+        self.user.is_staff = True
+        self.user.save()
+        self.assertIs(self.client.get('/api/v1/profile/').data['is_staff'], True)
+
     def test_invalid_accent_color(self):
         response = self.client.patch('/api/v1/profile/', {'accent_color': 'black'})
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
