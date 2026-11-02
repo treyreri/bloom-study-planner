@@ -10,6 +10,9 @@ from api.permissions import IsOwner
 class SubjectViewSet(viewsets.ModelViewSet):
     serializer_class = SubjectSerializer
     permission_classes = [IsAuthenticated, IsOwner]
+    filterset_fields = ['name', 'color']
+    search_fields = ['name', 'teacher', 'room']
+    ordering_fields = ['name']
     def get_queryset(self):
         return Subject.objects.filter(user=self.request.user)
 
@@ -20,6 +23,9 @@ class SubjectViewSet(viewsets.ModelViewSet):
 class DeadlineViewSet(viewsets.ModelViewSet):
     serializer_class = DeadlineSerializer
     permission_classes = [IsAuthenticated, IsOwner]
+    filterset_fields = ['kind', 'due_date', 'subject']
+    search_fields = ['title']
+    ordering_fields = ['due_date', 'title']
     def get_queryset(self):
         return Deadline.objects.filter(
             user=self.request.user ).select_related('subject')
