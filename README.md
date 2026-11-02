@@ -107,17 +107,18 @@ docker compose exec backend python manage.py createsuperuser
 docker compose exec backend python manage.py loaddata demo.json   # optional demo data
 ```
 
-Open **http://localhost** (or set `HTTP_PORT` in `.env` if port 80 is taken):
+Open **http://127.0.0.1:8038** (the stack publishes only `127.0.0.1:8038`; on the server the
+host's nginx proxies the domain to it):
 
 | URL | What |
 |---|---|
-| http://localhost/ | The website (React) |
-| http://localhost/api/docs/ | Swagger UI |
-| http://localhost/api/schema/ | OpenAPI schema |
-| http://localhost/admin/ | Django Admin |
+| http://127.0.0.1:8038/ | The website (React) |
+| http://127.0.0.1:8038/api/docs/ | Swagger UI |
+| http://127.0.0.1:8038/api/schema/ | OpenAPI schema |
+| http://127.0.0.1:8038/admin/ | Django Admin |
 
 `docker compose down` stops everything; the database, static files and avatars stay in Docker volumes
-(`docker compose down -v` deletes them too).
+(`docker compose down -v` deletes them too). Server deployment: see [DEPLOY.md](DEPLOY.md).
 
 ## Local development (Windows, PowerShell in VS Code)
 
@@ -156,7 +157,7 @@ presentation); `python manage.py loaddata demo.json` loads the same data with fi
 | `DB_HOST`, `DB_PORT` | prod without Docker | PostgreSQL address |
 | `ALLOWED_HOSTS`, `CSRF_TRUSTED_ORIGINS` | Docker / prod | Comma-separated host names / origins |
 | `SECURE_SSL_REDIRECT`, `SECURE_COOKIES` | Docker / prod | `False` for local http, `True` behind HTTPS |
-| `HTTP_PORT` | Docker | Published port of nginx-frontend (default 80) |
+| `GUNICORN_WORKERS` | Docker | Number of gunicorn workers (default 2) |
 | `EMAIL_*`, `SECURE_HSTS_SECONDS` | prod | SMTP settings, HSTS |
 
 ---
@@ -257,8 +258,7 @@ dashboard numbers, Pomodoro statistics and demo data.
 
 ## Deployment notes
 
-`docker compose up --build` runs the full production stack locally. On a real server:
-put HTTPS in front of nginx-frontend (or terminate TLS in it), set `SECURE_SSL_REDIRECT=True`,
-`SECURE_COOKIES=True`, a strong `SECRET_KEY` and `DB_PASSWORD`, the real `ALLOWED_HOSTS` /
-`CSRF_TRUSTED_ORIGINS`, and optionally schedule `python manage.py close_months` daily.
-Uploaded avatars live in the `media_files` volume — back it up together with `postgres_data`.
+The exact steps for the shared server (medhub.softclub.tj, project `bloom-muna`, port
+127.0.0.1:8038 behind the server's nginx) are in **[DEPLOY.md](DEPLOY.md)**. Optionally schedule
+`python manage.py close_months` daily. Uploaded avatars live in the `media_files` volume — back it
+up together with `postgres_data`.

@@ -1,3 +1,9 @@
+# Frontend build context: sources only
+.git
 node_modules
 dist
 .vite
+.env
+.env.*
+*.log
+Dockerfile

@@ -1,5 +1,6 @@
 # Backend image: only the Django project
 .git
+.gitignore
 .venv
 venv
 env
@@ -12,8 +13,10 @@ db.sqlite3
 media
 staticfiles
 frontend
+node_modules
 nginx
 docs
 .vscode
+*.md
 Dockerfile
 docker-compose.yml
