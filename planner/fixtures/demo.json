@@ -1,0 +1,2726 @@
+[
+{
+  "model": "auth.user",
+  "pk": 9001,
+  "fields": {
+    "password": "pbkdf2_sha256$1500000$dCNyRbQG0anq8sU54fIC5E$4P+DcD3NLuPNDi/hLt8f3mf/V9QveUXyK7Bl510GUvw=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "demo",
+    "first_name": "Алиса",
+    "last_name": "",
+    "email": "demo@example.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-11-02T12:23:29.873Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "accounts.profile",
+  "pk": 9001,
+  "fields": {
+    "user": 9001,
+    "avatar": "",
+    "accent_color": "pink",
+    "semester_goal": "Закрыть сессию без троек и не забывать отдыхать 🌷"
+  }
+},
+{
+  "model": "planner.quote",
+  "pk": 9002,
+  "fields": {
+    "text": "Маленькие шаги каждый день превращаются в большой сад.",
+    "author": "Bloom"
+  }
+},
+{
+  "model": "planner.quote",
+  "pk": 9003,
+  "fields": {
+    "text": "Успех — это сумма небольших усилий, повторяющихся изо дня в день.",
+    "author": "Роберт Кольер"
+  }
+},
+{
+  "model": "planner.quote",
+  "pk": 9004,
+  "fields": {
+    "text": "Не бойся медленно идти, бойся стоять на месте.",
+    "author": "Китайская пословица"
+  }
+},
+{
+  "model": "planner.quote",
+  "pk": 9005,
+  "fields": {
+    "text": "Учиться — всё равно что грести против течения: перестанешь — и тебя отнесёт назад.",
+    "author": "Бенджамин Бриттен"
+  }
+},
+{
+  "model": "planner.quote",
+  "pk": 9006,
+  "fields": {
+    "text": "Дисциплина — это мост между целями и достижениями.",
+    "author": "Джим Рон"
+  }
+},
+{
+  "model": "planner.quote",
+  "pk": 9007,
+  "fields": {
+    "text": "Каждый эксперт когда-то был новичком.",
+    "author": "Хелен Хейз"
+  }
+},
+{
+  "model": "planner.quote",
+  "pk": 9008,
+  "fields": {
+    "text": "Цветы не сравнивают себя с соседними — они просто цветут.",
+    "author": "Дзен-мудрость"
+  }
+},
+{
+  "model": "study.subject",
+  "pk": 9009,
+  "fields": {
+    "user": 9001,
+    "name": "SQL",
+    "color": "#FF0080",
+    "teacher": "Иванова А. П.",
+    "room": "214"
+  }
+},
+{
+  "model": "study.subject",
+  "pk": 9010,
+  "fields": {
+    "user": 9001,
+    "name": "Python",
+    "color": "#A8002E",
+    "teacher": "Петров С. Н.",
+    "room": "301"
+  }
+},
+{
+  "model": "study.subject",
+  "pk": 9011,
+  "fields": {
+    "user": 9001,
+    "name": "Английский",
+    "color": "#F48FA0",
+    "teacher": "Smith J.",
+    "room": "105"
+  }
+},
+{
+  "model": "study.subject",
+  "pk": 9012,
+  "fields": {
+    "user": 9001,
+    "name": "Математика",
+    "color": "#C77DFF",
+    "teacher": "Соколова Е. В.",
+    "room": "220"
+  }
+},
+{
+  "model": "study.scheduleslot",
+  "pk": 9013,
+  "fields": {
+    "user": 9001,
+    "subject": 9009,
+    "weekday": 0,
+    "start_time": "09:00:00",
+    "end_time": "10:30:00"
+  }
+},
+{
+  "model": "study.scheduleslot",
+  "pk": 9014,
+  "fields": {
+    "user": 9001,
+    "subject": 9010,
+    "weekday": 0,
+    "start_time": "10:45:00",
+    "end_time": "12:15:00"
+  }
+},
+{
+  "model": "study.scheduleslot",
+  "pk": 9015,
+  "fields": {
+    "user": 9001,
+    "subject": 9011,
+    "weekday": 1,
+    "start_time": "09:00:00",
+    "end_time": "10:30:00"
+  }
+},
+{
+  "model": "study.scheduleslot",
+  "pk": 9016,
+  "fields": {
+    "user": 9001,
+    "subject": 9012,
+    "weekday": 2,
+    "start_time": "12:30:00",
+    "end_time": "14:00:00"
+  }
+},
+{
+  "model": "study.scheduleslot",
+  "pk": 9017,
+  "fields": {
+    "user": 9001,
+    "subject": 9009,
+    "weekday": 2,
+    "start_time": "14:15:00",
+    "end_time": "15:45:00"
+  }
+},
+{
+  "model": "study.scheduleslot",
+  "pk": 9018,
+  "fields": {
+    "user": 9001,
+    "subject": 9010,
+    "weekday": 3,
+    "start_time": "09:00:00",
+    "end_time": "10:30:00"
+  }
+},
+{
+  "model": "study.scheduleslot",
+  "pk": 9019,
+  "fields": {
+    "user": 9001,
+    "subject": 9011,
+    "weekday": 4,
+    "start_time": "10:45:00",
+    "end_time": "12:15:00"
+  }
+},
+{
+  "model": "study.scheduleslot",
+  "pk": 9020,
+  "fields": {
+    "user": 9001,
+    "subject": 9012,
+    "weekday": 5,
+    "start_time": "10:45:00",
+    "end_time": "12:15:00"
+  }
+},
+{
+  "model": "study.deadline",
+  "pk": 9021,
+  "fields": {
+    "user": 9001,
+    "subject": 9009,
+    "title": "Экзамен по SQL",
+    "kind": "exam",
+    "due_date": "2026-11-14"
+  }
+},
+{
+  "model": "study.deadline",
+  "pk": 9022,
+  "fields": {
+    "user": 9001,
+    "subject": 9010,
+    "title": "Курсовая: Django REST API",
+    "kind": "coursework",
+    "due_date": "2026-11-22"
+  }
+},
+{
+  "model": "study.deadline",
+  "pk": 9023,
+  "fields": {
+    "user": 9001,
+    "subject": 9011,
+    "title": "Эссе о путешествиях",
+    "kind": "homework",
+    "due_date": "2026-11-05"
+  }
+},
+{
+  "model": "study.deadline",
+  "pk": 9024,
+  "fields": {
+    "user": 9001,
+    "subject": 9012,
+    "title": "Зачёт по матанализу",
+    "kind": "test",
+    "due_date": "2026-11-10"
+  }
+},
+{
+  "model": "study.deadline",
+  "pk": 9025,
+  "fields": {
+    "user": 9001,
+    "subject": 9011,
+    "title": "Устный экзамен",
+    "kind": "exam",
+    "due_date": "2026-12-02"
+  }
+},
+{
+  "model": "planner.monthplan",
+  "pk": 9026,
+  "fields": {
+    "user": 9001,
+    "year": 2026,
+    "month": 8,
+    "title": "Старт семестра",
+    "main_goal": "Не отставать от программы",
+    "focus_goals": [
+      "Сдавать лабы вовремя",
+      "Спорт 3 раза в неделю"
+    ],
+    "final_stage": "bouquet"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9027,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9026,
+    "subject": 9009,
+    "title": "Решить задачи",
+    "description": "",
+    "date": "2026-08-21",
+    "priority": "mid",
+    "is_done": true,
+    "done_at": "2026-08-21T18:00:00+03:00",
+    "created_at": "2026-11-02T12:23:31.044Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9028,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9026,
+    "subject": 9010,
+    "title": "Повторить теорию",
+    "description": "",
+    "date": "2026-08-08",
+    "priority": "low",
+    "is_done": true,
+    "done_at": "2026-08-08T18:00:00+03:00",
+    "created_at": "2026-11-02T12:23:31.047Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9029,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9026,
+    "subject": null,
+    "title": "Тест по теме",
+    "description": "",
+    "date": "2026-08-22",
+    "priority": "low",
+    "is_done": true,
+    "done_at": "2026-08-22T18:00:00+03:00",
+    "created_at": "2026-11-02T12:23:31.047Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9030,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9026,
+    "subject": 9009,
+    "title": "Выучить 20 слов",
+    "description": "",
+    "date": "2026-08-19",
+    "priority": "low",
+    "is_done": true,
+    "done_at": "2026-08-19T18:00:00+03:00",
+    "created_at": "2026-11-02T12:23:31.047Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9031,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9026,
+    "subject": 9010,
+    "title": "Повторить теорию",
+    "description": "",
+    "date": "2026-08-03",
+    "priority": "low",
+    "is_done": true,
+    "done_at": "2026-08-03T18:00:00+03:00",
+    "created_at": "2026-11-02T12:23:31.048Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9032,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9026,
+    "subject": null,
+    "title": "Повторить теорию",
+    "description": "",
+    "date": "2026-08-18",
+    "priority": "high",
+    "is_done": true,
+    "done_at": "2026-08-18T18:00:00+03:00",
+    "created_at": "2026-11-02T12:23:31.048Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9033,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9026,
+    "subject": null,
+    "title": "Сделать презентацию",
+    "description": "",
+    "date": "2026-08-08",
+    "priority": "mid",
+    "is_done": true,
+    "done_at": "2026-08-08T18:00:00+03:00",
+    "created_at": "2026-11-02T12:23:31.048Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9034,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9026,
+    "subject": 9010,
+    "title": "Конспект лекции",
+    "description": "",
+    "date": "2026-08-26",
+    "priority": "high",
+    "is_done": true,
+    "done_at": "2026-08-26T18:00:00+03:00",
+    "created_at": "2026-11-02T12:23:31.048Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9035,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9026,
+    "subject": 9010,
+    "title": "Лабораторная работа",
+    "description": "",
+    "date": "2026-08-11",
+    "priority": "mid",
+    "is_done": true,
+    "done_at": "2026-08-11T18:00:00+03:00",
+    "created_at": "2026-11-02T12:23:31.049Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9036,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9026,
+    "subject": 9009,
+    "title": "Прочитать главу",
+    "description": "",
+    "date": "2026-08-31",
+    "priority": "low",
+    "is_done": true,
+    "done_at": "2026-08-31T18:00:00+03:00",
+    "created_at": "2026-11-02T12:23:31.049Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9037,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9026,
+    "subject": 9011,
+    "title": "Решить задачи",
+    "description": "",
+    "date": "2026-08-13",
+    "priority": "mid",
+    "is_done": true,
+    "done_at": "2026-08-13T18:00:00+03:00",
+    "created_at": "2026-11-02T12:23:31.049Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9038,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9026,
+    "subject": 9009,
+    "title": "Лабораторная работа",
+    "description": "",
+    "date": "2026-08-20",
+    "priority": "high",
+    "is_done": true,
+    "done_at": "2026-08-20T18:00:00+03:00",
+    "created_at": "2026-11-02T12:23:31.049Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9039,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9026,
+    "subject": 9012,
+    "title": "Решить задачи",
+    "description": "",
+    "date": "2026-08-18",
+    "priority": "low",
+    "is_done": true,
+    "done_at": "2026-08-18T18:00:00+03:00",
+    "created_at": "2026-11-02T12:23:31.050Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9040,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9026,
+    "subject": null,
+    "title": "Лабораторная работа",
+    "description": "",
+    "date": "2026-08-18",
+    "priority": "mid",
+    "is_done": true,
+    "done_at": "2026-08-18T18:00:00+03:00",
+    "created_at": "2026-11-02T12:23:31.050Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9041,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9026,
+    "subject": 9009,
+    "title": "Повторить теорию",
+    "description": "",
+    "date": "2026-08-19",
+    "priority": "low",
+    "is_done": true,
+    "done_at": "2026-08-19T18:00:00+03:00",
+    "created_at": "2026-11-02T12:23:31.050Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9042,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9026,
+    "subject": 9011,
+    "title": "Повторить теорию",
+    "description": "",
+    "date": "2026-08-22",
+    "priority": "low",
+    "is_done": true,
+    "done_at": "2026-08-22T18:00:00+03:00",
+    "created_at": "2026-11-02T12:23:31.050Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9043,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9026,
+    "subject": 9009,
+    "title": "Повторить теорию",
+    "description": "",
+    "date": "2026-08-28",
+    "priority": "high",
+    "is_done": true,
+    "done_at": "2026-08-28T18:00:00+03:00",
+    "created_at": "2026-11-02T12:23:31.051Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9044,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9026,
+    "subject": 9011,
+    "title": "Сделать презентацию",
+    "description": "",
+    "date": "2026-08-09",
+    "priority": "mid",
+    "is_done": true,
+    "done_at": "2026-08-09T18:00:00+03:00",
+    "created_at": "2026-11-02T12:23:31.051Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9045,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9026,
+    "subject": 9010,
+    "title": "Прочитать главу",
+    "description": "",
+    "date": "2026-08-12",
+    "priority": "mid",
+    "is_done": false,
+    "done_at": null,
+    "created_at": "2026-11-02T12:23:31.051Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9046,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9026,
+    "subject": 9009,
+    "title": "Сходить в библиотеку",
+    "description": "",
+    "date": "2026-08-23",
+    "priority": "mid",
+    "is_done": false,
+    "done_at": null,
+    "created_at": "2026-11-02T12:23:31.051Z"
+  }
+},
+{
+  "model": "planner.monthplan",
+  "pk": 9047,
+  "fields": {
+    "user": 9001,
+    "year": 2026,
+    "month": 9,
+    "title": "Октябрь — лабораторные",
+    "main_goal": "Не отставать от программы",
+    "focus_goals": [
+      "Сдавать лабы вовремя",
+      "Спорт 3 раза в неделю"
+    ],
+    "final_stage": "bud"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9048,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9047,
+    "subject": 9010,
+    "title": "Тест по теме",
+    "description": "",
+    "date": "2026-09-18",
+    "priority": "mid",
+    "is_done": true,
+    "done_at": "2026-09-18T18:00:00+03:00",
+    "created_at": "2026-11-02T12:23:31.052Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9049,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9047,
+    "subject": 9011,
+    "title": "Выучить 20 слов",
+    "description": "",
+    "date": "2026-09-15",
+    "priority": "mid",
+    "is_done": true,
+    "done_at": "2026-09-15T18:00:00+03:00",
+    "created_at": "2026-11-02T12:23:31.053Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9050,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9047,
+    "subject": 9009,
+    "title": "Прочитать главу",
+    "description": "",
+    "date": "2026-09-22",
+    "priority": "mid",
+    "is_done": true,
+    "done_at": "2026-09-22T18:00:00+03:00",
+    "created_at": "2026-11-02T12:23:31.053Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9051,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9047,
+    "subject": 9011,
+    "title": "Конспект лекции",
+    "description": "",
+    "date": "2026-09-27",
+    "priority": "high",
+    "is_done": true,
+    "done_at": "2026-09-27T18:00:00+03:00",
+    "created_at": "2026-11-02T12:23:31.053Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9052,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9047,
+    "subject": 9010,
+    "title": "Решить задачи",
+    "description": "",
+    "date": "2026-09-09",
+    "priority": "mid",
+    "is_done": true,
+    "done_at": "2026-09-09T18:00:00+03:00",
+    "created_at": "2026-11-02T12:23:31.053Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9053,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9047,
+    "subject": 9012,
+    "title": "Сходить в библиотеку",
+    "description": "",
+    "date": "2026-09-07",
+    "priority": "high",
+    "is_done": true,
+    "done_at": "2026-09-07T18:00:00+03:00",
+    "created_at": "2026-11-02T12:23:31.054Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9054,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9047,
+    "subject": 9012,
+    "title": "Сходить в библиотеку",
+    "description": "",
+    "date": "2026-09-29",
+    "priority": "mid",
+    "is_done": true,
+    "done_at": "2026-09-29T18:00:00+03:00",
+    "created_at": "2026-11-02T12:23:31.054Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9055,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9047,
+    "subject": 9010,
+    "title": "Подготовить доклад",
+    "description": "",
+    "date": "2026-09-09",
+    "priority": "mid",
+    "is_done": true,
+    "done_at": "2026-09-09T18:00:00+03:00",
+    "created_at": "2026-11-02T12:23:31.054Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9056,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9047,
+    "subject": 9012,
+    "title": "Разобрать ошибки",
+    "description": "",
+    "date": "2026-09-24",
+    "priority": "high",
+    "is_done": true,
+    "done_at": "2026-09-24T18:00:00+03:00",
+    "created_at": "2026-11-02T12:23:31.054Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9057,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9047,
+    "subject": 9010,
+    "title": "Повторить теорию",
+    "description": "",
+    "date": "2026-09-12",
+    "priority": "high",
+    "is_done": true,
+    "done_at": "2026-09-12T18:00:00+03:00",
+    "created_at": "2026-11-02T12:23:31.055Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9058,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9047,
+    "subject": 9009,
+    "title": "Конспект лекции",
+    "description": "",
+    "date": "2026-09-03",
+    "priority": "mid",
+    "is_done": true,
+    "done_at": "2026-09-03T18:00:00+03:00",
+    "created_at": "2026-11-02T12:23:31.055Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9059,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9047,
+    "subject": 9012,
+    "title": "Подготовить доклад",
+    "description": "",
+    "date": "2026-09-21",
+    "priority": "low",
+    "is_done": true,
+    "done_at": "2026-09-21T18:00:00+03:00",
+    "created_at": "2026-11-02T12:23:31.055Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9060,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9047,
+    "subject": null,
+    "title": "Выучить 20 слов",
+    "description": "",
+    "date": "2026-09-13",
+    "priority": "high",
+    "is_done": false,
+    "done_at": null,
+    "created_at": "2026-11-02T12:23:31.055Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9061,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9047,
+    "subject": null,
+    "title": "Лабораторная работа",
+    "description": "",
+    "date": "2026-09-17",
+    "priority": "low",
+    "is_done": false,
+    "done_at": null,
+    "created_at": "2026-11-02T12:23:31.055Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9062,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9047,
+    "subject": 9009,
+    "title": "Тест по теме",
+    "description": "",
+    "date": "2026-09-22",
+    "priority": "mid",
+    "is_done": false,
+    "done_at": null,
+    "created_at": "2026-11-02T12:23:31.056Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9063,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9047,
+    "subject": 9011,
+    "title": "Сходить в библиотеку",
+    "description": "",
+    "date": "2026-09-25",
+    "priority": "low",
+    "is_done": false,
+    "done_at": null,
+    "created_at": "2026-11-02T12:23:31.056Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9064,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9047,
+    "subject": 9010,
+    "title": "Выучить 20 слов",
+    "description": "",
+    "date": "2026-09-10",
+    "priority": "high",
+    "is_done": false,
+    "done_at": null,
+    "created_at": "2026-11-02T12:23:31.056Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9065,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9047,
+    "subject": 9011,
+    "title": "Тест по теме",
+    "description": "",
+    "date": "2026-09-01",
+    "priority": "mid",
+    "is_done": false,
+    "done_at": null,
+    "created_at": "2026-11-02T12:23:31.056Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9066,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9047,
+    "subject": 9011,
+    "title": "Решить задачи",
+    "description": "",
+    "date": "2026-09-17",
+    "priority": "mid",
+    "is_done": false,
+    "done_at": null,
+    "created_at": "2026-11-02T12:23:31.059Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9067,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9047,
+    "subject": 9010,
+    "title": "Прочитать главу",
+    "description": "",
+    "date": "2026-09-05",
+    "priority": "low",
+    "is_done": false,
+    "done_at": null,
+    "created_at": "2026-11-02T12:23:31.060Z"
+  }
+},
+{
+  "model": "planner.monthplan",
+  "pk": 9068,
+  "fields": {
+    "user": 9001,
+    "year": 2026,
+    "month": 10,
+    "title": "Месяц коллоквиумов",
+    "main_goal": "Не отставать от программы",
+    "focus_goals": [
+      "Сдавать лабы вовремя",
+      "Спорт 3 раза в неделю"
+    ],
+    "final_stage": "stem"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9069,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9068,
+    "subject": 9012,
+    "title": "Прочитать главу",
+    "description": "",
+    "date": "2026-10-20",
+    "priority": "low",
+    "is_done": true,
+    "done_at": "2026-10-20T18:00:00+03:00",
+    "created_at": "2026-11-02T12:23:31.061Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9070,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9068,
+    "subject": 9011,
+    "title": "Прочитать главу",
+    "description": "",
+    "date": "2026-10-04",
+    "priority": "mid",
+    "is_done": true,
+    "done_at": "2026-10-04T18:00:00+03:00",
+    "created_at": "2026-11-02T12:23:31.061Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9071,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9068,
+    "subject": null,
+    "title": "Повторить теорию",
+    "description": "",
+    "date": "2026-10-02",
+    "priority": "low",
+    "is_done": true,
+    "done_at": "2026-10-02T18:00:00+03:00",
+    "created_at": "2026-11-02T12:23:31.061Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9072,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9068,
+    "subject": 9012,
+    "title": "Тест по теме",
+    "description": "",
+    "date": "2026-10-03",
+    "priority": "low",
+    "is_done": true,
+    "done_at": "2026-10-03T18:00:00+03:00",
+    "created_at": "2026-11-02T12:23:31.061Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9073,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9068,
+    "subject": 9010,
+    "title": "Написать эссе",
+    "description": "",
+    "date": "2026-10-25",
+    "priority": "mid",
+    "is_done": true,
+    "done_at": "2026-10-25T18:00:00+03:00",
+    "created_at": "2026-11-02T12:23:31.062Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9074,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9068,
+    "subject": null,
+    "title": "Сделать презентацию",
+    "description": "",
+    "date": "2026-10-22",
+    "priority": "mid",
+    "is_done": true,
+    "done_at": "2026-10-22T18:00:00+03:00",
+    "created_at": "2026-11-02T12:23:31.062Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9075,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9068,
+    "subject": null,
+    "title": "Написать эссе",
+    "description": "",
+    "date": "2026-10-09",
+    "priority": "high",
+    "is_done": true,
+    "done_at": "2026-10-09T18:00:00+03:00",
+    "created_at": "2026-11-02T12:23:31.062Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9076,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9068,
+    "subject": null,
+    "title": "Повторить теорию",
+    "description": "",
+    "date": "2026-10-31",
+    "priority": "mid",
+    "is_done": false,
+    "done_at": null,
+    "created_at": "2026-11-02T12:23:31.062Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9077,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9068,
+    "subject": 9012,
+    "title": "Лабораторная работа",
+    "description": "",
+    "date": "2026-10-23",
+    "priority": "mid",
+    "is_done": false,
+    "done_at": null,
+    "created_at": "2026-11-02T12:23:31.062Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9078,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9068,
+    "subject": 9012,
+    "title": "Написать эссе",
+    "description": "",
+    "date": "2026-10-15",
+    "priority": "low",
+    "is_done": false,
+    "done_at": null,
+    "created_at": "2026-11-02T12:23:31.063Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9079,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9068,
+    "subject": 9009,
+    "title": "Повторить теорию",
+    "description": "",
+    "date": "2026-10-08",
+    "priority": "mid",
+    "is_done": false,
+    "done_at": null,
+    "created_at": "2026-11-02T12:23:31.063Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9080,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9068,
+    "subject": null,
+    "title": "Разобрать ошибки",
+    "description": "",
+    "date": "2026-10-01",
+    "priority": "mid",
+    "is_done": false,
+    "done_at": null,
+    "created_at": "2026-11-02T12:23:31.063Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9081,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9068,
+    "subject": 9009,
+    "title": "Повторить теорию",
+    "description": "",
+    "date": "2026-10-19",
+    "priority": "low",
+    "is_done": false,
+    "done_at": null,
+    "created_at": "2026-11-02T12:23:31.063Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9082,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9068,
+    "subject": 9009,
+    "title": "Сходить в библиотеку",
+    "description": "",
+    "date": "2026-10-23",
+    "priority": "mid",
+    "is_done": false,
+    "done_at": null,
+    "created_at": "2026-11-02T12:23:31.064Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9083,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9068,
+    "subject": 9011,
+    "title": "Конспект лекции",
+    "description": "",
+    "date": "2026-10-03",
+    "priority": "low",
+    "is_done": false,
+    "done_at": null,
+    "created_at": "2026-11-02T12:23:31.064Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9084,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9068,
+    "subject": 9011,
+    "title": "Повторить теорию",
+    "description": "",
+    "date": "2026-10-17",
+    "priority": "high",
+    "is_done": false,
+    "done_at": null,
+    "created_at": "2026-11-02T12:23:31.064Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9085,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9068,
+    "subject": 9010,
+    "title": "Написать эссе",
+    "description": "",
+    "date": "2026-10-07",
+    "priority": "high",
+    "is_done": false,
+    "done_at": null,
+    "created_at": "2026-11-02T12:23:31.064Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9086,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9068,
+    "subject": 9012,
+    "title": "Сделать презентацию",
+    "description": "",
+    "date": "2026-10-08",
+    "priority": "mid",
+    "is_done": false,
+    "done_at": null,
+    "created_at": "2026-11-02T12:23:31.064Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9087,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9068,
+    "subject": 9012,
+    "title": "Решить задачи",
+    "description": "",
+    "date": "2026-10-04",
+    "priority": "mid",
+    "is_done": false,
+    "done_at": null,
+    "created_at": "2026-11-02T12:23:31.065Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9088,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9068,
+    "subject": 9012,
+    "title": "Выучить 20 слов",
+    "description": "",
+    "date": "2026-10-14",
+    "priority": "low",
+    "is_done": false,
+    "done_at": null,
+    "created_at": "2026-11-02T12:23:31.065Z"
+  }
+},
+{
+  "model": "planner.monthplan",
+  "pk": 9089,
+  "fields": {
+    "user": 9001,
+    "year": 2026,
+    "month": 11,
+    "title": "Ноябрь — сессия!",
+    "main_goal": "Подготовиться к экзамену по SQL и сдать курсовую",
+    "focus_goals": [
+      "Каждый день 1 помодоро по SQL",
+      "20 французских слов в день",
+      "Спать 8 часов"
+    ],
+    "final_stage": null
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9090,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9089,
+    "subject": 9011,
+    "title": "Тест по теме",
+    "description": "",
+    "date": "2026-11-04",
+    "priority": "low",
+    "is_done": false,
+    "done_at": null,
+    "created_at": "2026-11-02T12:23:31.066Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9091,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9089,
+    "subject": 9010,
+    "title": "Повторить теорию",
+    "description": "",
+    "date": "2026-11-04",
+    "priority": "mid",
+    "is_done": false,
+    "done_at": null,
+    "created_at": "2026-11-02T12:23:31.066Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9092,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9089,
+    "subject": 9010,
+    "title": "Сделать презентацию",
+    "description": "",
+    "date": "2026-11-05",
+    "priority": "high",
+    "is_done": false,
+    "done_at": null,
+    "created_at": "2026-11-02T12:23:31.066Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9093,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9089,
+    "subject": 9011,
+    "title": "Подготовить доклад",
+    "description": "",
+    "date": "2026-11-05",
+    "priority": "high",
+    "is_done": false,
+    "done_at": null,
+    "created_at": "2026-11-02T12:23:31.066Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9094,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9089,
+    "subject": 9009,
+    "title": "Повторить теорию",
+    "description": "",
+    "date": "2026-11-05",
+    "priority": "high",
+    "is_done": false,
+    "done_at": null,
+    "created_at": "2026-11-02T12:23:31.067Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9095,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9089,
+    "subject": 9009,
+    "title": "Решить задачи",
+    "description": "",
+    "date": "2026-11-06",
+    "priority": "low",
+    "is_done": false,
+    "done_at": null,
+    "created_at": "2026-11-02T12:23:31.067Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9096,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9089,
+    "subject": 9010,
+    "title": "Решить задачи",
+    "description": "",
+    "date": "2026-11-06",
+    "priority": "mid",
+    "is_done": false,
+    "done_at": null,
+    "created_at": "2026-11-02T12:23:31.067Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9097,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9089,
+    "subject": 9012,
+    "title": "Выучить 20 слов",
+    "description": "",
+    "date": "2026-11-06",
+    "priority": "high",
+    "is_done": false,
+    "done_at": null,
+    "created_at": "2026-11-02T12:23:31.067Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9098,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9089,
+    "subject": 9009,
+    "title": "Выучить 20 слов",
+    "description": "",
+    "date": "2026-11-07",
+    "priority": "mid",
+    "is_done": false,
+    "done_at": null,
+    "created_at": "2026-11-02T12:23:31.067Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9099,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9089,
+    "subject": 9012,
+    "title": "Конспект лекции",
+    "description": "",
+    "date": "2026-11-08",
+    "priority": "mid",
+    "is_done": false,
+    "done_at": null,
+    "created_at": "2026-11-02T12:23:31.068Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9100,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9089,
+    "subject": 9011,
+    "title": "Сделать презентацию",
+    "description": "",
+    "date": "2026-11-08",
+    "priority": "high",
+    "is_done": false,
+    "done_at": null,
+    "created_at": "2026-11-02T12:23:31.068Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9101,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9089,
+    "subject": 9012,
+    "title": "Сходить в библиотеку",
+    "description": "",
+    "date": "2026-11-09",
+    "priority": "mid",
+    "is_done": false,
+    "done_at": null,
+    "created_at": "2026-11-02T12:23:31.068Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9102,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9089,
+    "subject": 9011,
+    "title": "Повторить теорию",
+    "description": "",
+    "date": "2026-11-09",
+    "priority": "mid",
+    "is_done": false,
+    "done_at": null,
+    "created_at": "2026-11-02T12:23:31.068Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9103,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9089,
+    "subject": null,
+    "title": "Конспект лекции",
+    "description": "",
+    "date": "2026-11-09",
+    "priority": "low",
+    "is_done": false,
+    "done_at": null,
+    "created_at": "2026-11-02T12:23:31.068Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9104,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9089,
+    "subject": 9009,
+    "title": "Конспект лекции",
+    "description": "",
+    "date": "2026-11-10",
+    "priority": "high",
+    "is_done": false,
+    "done_at": null,
+    "created_at": "2026-11-02T12:23:31.069Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9105,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9089,
+    "subject": 9010,
+    "title": "Написать эссе",
+    "description": "",
+    "date": "2026-11-11",
+    "priority": "low",
+    "is_done": false,
+    "done_at": null,
+    "created_at": "2026-11-02T12:23:31.069Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9106,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9089,
+    "subject": 9009,
+    "title": "Написать эссе",
+    "description": "",
+    "date": "2026-11-11",
+    "priority": "mid",
+    "is_done": false,
+    "done_at": null,
+    "created_at": "2026-11-02T12:23:31.069Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9107,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9089,
+    "subject": null,
+    "title": "Решить задачи",
+    "description": "",
+    "date": "2026-11-11",
+    "priority": "low",
+    "is_done": false,
+    "done_at": null,
+    "created_at": "2026-11-02T12:23:31.069Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9108,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9089,
+    "subject": 9009,
+    "title": "Выучить 20 слов",
+    "description": "",
+    "date": "2026-11-12",
+    "priority": "mid",
+    "is_done": false,
+    "done_at": null,
+    "created_at": "2026-11-02T12:23:31.070Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9109,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9089,
+    "subject": 9009,
+    "title": "Разобрать ошибки",
+    "description": "",
+    "date": "2026-11-13",
+    "priority": "low",
+    "is_done": false,
+    "done_at": null,
+    "created_at": "2026-11-02T12:23:31.070Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9110,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9089,
+    "subject": null,
+    "title": "Выучить 20 слов",
+    "description": "",
+    "date": "2026-11-13",
+    "priority": "mid",
+    "is_done": false,
+    "done_at": null,
+    "created_at": "2026-11-02T12:23:31.070Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9111,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9089,
+    "subject": 9010,
+    "title": "Лабораторная работа",
+    "description": "",
+    "date": "2026-11-13",
+    "priority": "mid",
+    "is_done": false,
+    "done_at": null,
+    "created_at": "2026-11-02T12:23:31.070Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9112,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9089,
+    "subject": 9012,
+    "title": "Лабораторная работа",
+    "description": "",
+    "date": "2026-11-14",
+    "priority": "mid",
+    "is_done": false,
+    "done_at": null,
+    "created_at": "2026-11-02T12:23:31.070Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9113,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9089,
+    "subject": 9011,
+    "title": "Сделать презентацию",
+    "description": "",
+    "date": "2026-11-15",
+    "priority": "low",
+    "is_done": false,
+    "done_at": null,
+    "created_at": "2026-11-02T12:23:31.071Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9114,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9089,
+    "subject": null,
+    "title": "Разобрать ошибки",
+    "description": "",
+    "date": "2026-11-17",
+    "priority": "low",
+    "is_done": false,
+    "done_at": null,
+    "created_at": "2026-11-02T12:23:31.071Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9115,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9089,
+    "subject": null,
+    "title": "Решить задачи",
+    "description": "",
+    "date": "2026-11-17",
+    "priority": "mid",
+    "is_done": false,
+    "done_at": null,
+    "created_at": "2026-11-02T12:23:31.071Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9116,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9089,
+    "subject": 9010,
+    "title": "Лабораторная работа",
+    "description": "",
+    "date": "2026-11-18",
+    "priority": "mid",
+    "is_done": false,
+    "done_at": null,
+    "created_at": "2026-11-02T12:23:31.071Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9117,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9089,
+    "subject": 9010,
+    "title": "Решить задачи",
+    "description": "",
+    "date": "2026-11-18",
+    "priority": "mid",
+    "is_done": false,
+    "done_at": null,
+    "created_at": "2026-11-02T12:23:31.071Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9118,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9089,
+    "subject": 9010,
+    "title": "Лабораторная работа",
+    "description": "",
+    "date": "2026-11-18",
+    "priority": "high",
+    "is_done": false,
+    "done_at": null,
+    "created_at": "2026-11-02T12:23:31.072Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9119,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9089,
+    "subject": 9011,
+    "title": "Тест по теме",
+    "description": "",
+    "date": "2026-11-19",
+    "priority": "low",
+    "is_done": false,
+    "done_at": null,
+    "created_at": "2026-11-02T12:23:31.072Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9120,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9089,
+    "subject": null,
+    "title": "Сходить в библиотеку",
+    "description": "",
+    "date": "2026-11-19",
+    "priority": "mid",
+    "is_done": false,
+    "done_at": null,
+    "created_at": "2026-11-02T12:23:31.072Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9121,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9089,
+    "subject": 9009,
+    "title": "Сходить в библиотеку",
+    "description": "",
+    "date": "2026-11-19",
+    "priority": "mid",
+    "is_done": false,
+    "done_at": null,
+    "created_at": "2026-11-02T12:23:31.072Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9122,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9089,
+    "subject": 9009,
+    "title": "Решить задачи",
+    "description": "",
+    "date": "2026-11-20",
+    "priority": "mid",
+    "is_done": false,
+    "done_at": null,
+    "created_at": "2026-11-02T12:23:31.072Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9123,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9089,
+    "subject": null,
+    "title": "Лабораторная работа",
+    "description": "",
+    "date": "2026-11-21",
+    "priority": "mid",
+    "is_done": false,
+    "done_at": null,
+    "created_at": "2026-11-02T12:23:31.073Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9124,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9089,
+    "subject": 9011,
+    "title": "Повторить теорию",
+    "description": "",
+    "date": "2026-11-22",
+    "priority": "high",
+    "is_done": false,
+    "done_at": null,
+    "created_at": "2026-11-02T12:23:31.073Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9125,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9089,
+    "subject": 9009,
+    "title": "Конспект лекции",
+    "description": "",
+    "date": "2026-11-23",
+    "priority": "high",
+    "is_done": false,
+    "done_at": null,
+    "created_at": "2026-11-02T12:23:31.073Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9126,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9089,
+    "subject": 9009,
+    "title": "Конспект лекции",
+    "description": "",
+    "date": "2026-11-24",
+    "priority": "mid",
+    "is_done": false,
+    "done_at": null,
+    "created_at": "2026-11-02T12:23:31.074Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9127,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9089,
+    "subject": 9011,
+    "title": "Сходить в библиотеку",
+    "description": "",
+    "date": "2026-11-25",
+    "priority": "mid",
+    "is_done": false,
+    "done_at": null,
+    "created_at": "2026-11-02T12:23:31.075Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9128,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9089,
+    "subject": 9012,
+    "title": "Написать эссе",
+    "description": "",
+    "date": "2026-11-26",
+    "priority": "low",
+    "is_done": false,
+    "done_at": null,
+    "created_at": "2026-11-02T12:23:31.075Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9129,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9089,
+    "subject": 9009,
+    "title": "Решить задачи",
+    "description": "",
+    "date": "2026-11-26",
+    "priority": "mid",
+    "is_done": false,
+    "done_at": null,
+    "created_at": "2026-11-02T12:23:31.076Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9130,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9089,
+    "subject": 9011,
+    "title": "Конспект лекции",
+    "description": "",
+    "date": "2026-11-27",
+    "priority": "mid",
+    "is_done": false,
+    "done_at": null,
+    "created_at": "2026-11-02T12:23:31.076Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9131,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9089,
+    "subject": 9010,
+    "title": "Выучить 20 слов",
+    "description": "",
+    "date": "2026-11-27",
+    "priority": "low",
+    "is_done": false,
+    "done_at": null,
+    "created_at": "2026-11-02T12:23:31.076Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9132,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9089,
+    "subject": 9011,
+    "title": "Лабораторная работа",
+    "description": "",
+    "date": "2026-11-27",
+    "priority": "low",
+    "is_done": false,
+    "done_at": null,
+    "created_at": "2026-11-02T12:23:31.076Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9133,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9089,
+    "subject": 9010,
+    "title": "Повторить теорию",
+    "description": "",
+    "date": "2026-11-28",
+    "priority": "low",
+    "is_done": false,
+    "done_at": null,
+    "created_at": "2026-11-02T12:23:31.077Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9134,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9089,
+    "subject": 9012,
+    "title": "Написать эссе",
+    "description": "",
+    "date": "2026-11-29",
+    "priority": "mid",
+    "is_done": false,
+    "done_at": null,
+    "created_at": "2026-11-02T12:23:31.077Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9135,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9089,
+    "subject": 9010,
+    "title": "Подготовить доклад",
+    "description": "",
+    "date": "2026-11-30",
+    "priority": "high",
+    "is_done": false,
+    "done_at": null,
+    "created_at": "2026-11-02T12:23:31.077Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9136,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9089,
+    "subject": 9009,
+    "title": "Повторить JOIN и GROUP BY",
+    "description": "",
+    "date": "2026-11-02",
+    "priority": "high",
+    "is_done": true,
+    "done_at": "2026-11-02T12:23:31.077Z",
+    "created_at": "2026-11-02T12:23:31.077Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9137,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9089,
+    "subject": null,
+    "title": "Выучить 20 французских слов",
+    "description": "",
+    "date": "2026-11-02",
+    "priority": "mid",
+    "is_done": true,
+    "done_at": "2026-11-02T12:23:31.077Z",
+    "created_at": "2026-11-02T12:23:31.077Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9138,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9089,
+    "subject": 9010,
+    "title": "Дописать главу курсовой",
+    "description": "",
+    "date": "2026-11-02",
+    "priority": "high",
+    "is_done": false,
+    "done_at": null,
+    "created_at": "2026-11-02T12:23:31.078Z"
+  }
+},
+{
+  "model": "planner.task",
+  "pk": 9139,
+  "fields": {
+    "user": 9001,
+    "month_plan": 9089,
+    "subject": null,
+    "title": "Сходить в зал",
+    "description": "",
+    "date": "2026-11-02",
+    "priority": "low",
+    "is_done": false,
+    "done_at": null,
+    "created_at": "2026-11-02T12:23:31.078Z"
+  }
+},
+{
+  "model": "habits.habit",
+  "pk": 9140,
+  "fields": {
+    "user": 9001,
+    "title": "Выпить 8 стаканов воды",
+    "emoji": "💧",
+    "is_active": true
+  }
+},
+{
+  "model": "habits.habitcheck",
+  "pk": 9141,
+  "fields": {
+    "habit": 9140,
+    "date": "2026-11-01"
+  }
+},
+{
+  "model": "habits.habitcheck",
+  "pk": 9142,
+  "fields": {
+    "habit": 9140,
+    "date": "2026-10-31"
+  }
+},
+{
+  "model": "habits.habitcheck",
+  "pk": 9143,
+  "fields": {
+    "habit": 9140,
+    "date": "2026-10-30"
+  }
+},
+{
+  "model": "habits.habitcheck",
+  "pk": 9144,
+  "fields": {
+    "habit": 9140,
+    "date": "2026-10-29"
+  }
+},
+{
+  "model": "habits.habitcheck",
+  "pk": 9145,
+  "fields": {
+    "habit": 9140,
+    "date": "2026-10-28"
+  }
+},
+{
+  "model": "habits.habitcheck",
+  "pk": 9146,
+  "fields": {
+    "habit": 9140,
+    "date": "2026-10-27"
+  }
+},
+{
+  "model": "habits.habitcheck",
+  "pk": 9147,
+  "fields": {
+    "habit": 9140,
+    "date": "2026-10-26"
+  }
+},
+{
+  "model": "habits.habit",
+  "pk": 9148,
+  "fields": {
+    "user": 9001,
+    "title": "20 французских слов",
+    "emoji": "🇫🇷",
+    "is_active": true
+  }
+},
+{
+  "model": "habits.habitcheck",
+  "pk": 9149,
+  "fields": {
+    "habit": 9148,
+    "date": "2026-11-01"
+  }
+},
+{
+  "model": "habits.habitcheck",
+  "pk": 9150,
+  "fields": {
+    "habit": 9148,
+    "date": "2026-10-30"
+  }
+},
+{
+  "model": "habits.habitcheck",
+  "pk": 9151,
+  "fields": {
+    "habit": 9148,
+    "date": "2026-10-25"
+  }
+},
+{
+  "model": "habits.habitcheck",
+  "pk": 9152,
+  "fields": {
+    "habit": 9148,
+    "date": "2026-10-23"
+  }
+},
+{
+  "model": "habits.habitcheck",
+  "pk": 9153,
+  "fields": {
+    "habit": 9148,
+    "date": "2026-10-20"
+  }
+},
+{
+  "model": "habits.habitcheck",
+  "pk": 9154,
+  "fields": {
+    "habit": 9148,
+    "date": "2026-10-18"
+  }
+},
+{
+  "model": "habits.habitcheck",
+  "pk": 9155,
+  "fields": {
+    "habit": 9148,
+    "date": "2026-10-17"
+  }
+},
+{
+  "model": "habits.habitcheck",
+  "pk": 9156,
+  "fields": {
+    "habit": 9148,
+    "date": "2026-10-15"
+  }
+},
+{
+  "model": "habits.habitcheck",
+  "pk": 9157,
+  "fields": {
+    "habit": 9148,
+    "date": "2026-10-14"
+  }
+},
+{
+  "model": "habits.habitcheck",
+  "pk": 9158,
+  "fields": {
+    "habit": 9148,
+    "date": "2026-10-13"
+  }
+},
+{
+  "model": "habits.habitcheck",
+  "pk": 9159,
+  "fields": {
+    "habit": 9148,
+    "date": "2026-10-12"
+  }
+},
+{
+  "model": "habits.habitcheck",
+  "pk": 9160,
+  "fields": {
+    "habit": 9148,
+    "date": "2026-10-09"
+  }
+},
+{
+  "model": "habits.habitcheck",
+  "pk": 9161,
+  "fields": {
+    "habit": 9148,
+    "date": "2026-10-08"
+  }
+},
+{
+  "model": "habits.habitcheck",
+  "pk": 9162,
+  "fields": {
+    "habit": 9148,
+    "date": "2026-10-07"
+  }
+},
+{
+  "model": "habits.habitcheck",
+  "pk": 9163,
+  "fields": {
+    "habit": 9148,
+    "date": "2026-10-05"
+  }
+},
+{
+  "model": "habits.habitcheck",
+  "pk": 9164,
+  "fields": {
+    "habit": 9148,
+    "date": "2026-10-03"
+  }
+},
+{
+  "model": "habits.habitcheck",
+  "pk": 9165,
+  "fields": {
+    "habit": 9148,
+    "date": "2026-10-01"
+  }
+},
+{
+  "model": "habits.habitcheck",
+  "pk": 9166,
+  "fields": {
+    "habit": 9148,
+    "date": "2026-09-29"
+  }
+},
+{
+  "model": "habits.habitcheck",
+  "pk": 9167,
+  "fields": {
+    "habit": 9148,
+    "date": "2026-09-28"
+  }
+},
+{
+  "model": "habits.habitcheck",
+  "pk": 9168,
+  "fields": {
+    "habit": 9148,
+    "date": "2026-09-27"
+  }
+},
+{
+  "model": "habits.habitcheck",
+  "pk": 9169,
+  "fields": {
+    "habit": 9148,
+    "date": "2026-09-25"
+  }
+},
+{
+  "model": "habits.habitcheck",
+  "pk": 9170,
+  "fields": {
+    "habit": 9148,
+    "date": "2026-09-24"
+  }
+},
+{
+  "model": "habits.habit",
+  "pk": 9171,
+  "fields": {
+    "user": 9001,
+    "title": "Зал",
+    "emoji": "🏃‍♀️",
+    "is_active": true
+  }
+},
+{
+  "model": "habits.habitcheck",
+  "pk": 9172,
+  "fields": {
+    "habit": 9171,
+    "date": "2026-10-31"
+  }
+},
+{
+  "model": "habits.habitcheck",
+  "pk": 9173,
+  "fields": {
+    "habit": 9171,
+    "date": "2026-10-29"
+  }
+},
+{
+  "model": "habits.habitcheck",
+  "pk": 9174,
+  "fields": {
+    "habit": 9171,
+    "date": "2026-10-27"
+  }
+},
+{
+  "model": "habits.habitcheck",
+  "pk": 9175,
+  "fields": {
+    "habit": 9171,
+    "date": "2026-10-21"
+  }
+},
+{
+  "model": "habits.habitcheck",
+  "pk": 9176,
+  "fields": {
+    "habit": 9171,
+    "date": "2026-10-20"
+  }
+},
+{
+  "model": "habits.habitcheck",
+  "pk": 9177,
+  "fields": {
+    "habit": 9171,
+    "date": "2026-10-18"
+  }
+},
+{
+  "model": "habits.habitcheck",
+  "pk": 9178,
+  "fields": {
+    "habit": 9171,
+    "date": "2026-10-17"
+  }
+},
+{
+  "model": "habits.habitcheck",
+  "pk": 9179,
+  "fields": {
+    "habit": 9171,
+    "date": "2026-10-14"
+  }
+},
+{
+  "model": "habits.habitcheck",
+  "pk": 9180,
+  "fields": {
+    "habit": 9171,
+    "date": "2026-10-13"
+  }
+},
+{
+  "model": "habits.habitcheck",
+  "pk": 9181,
+  "fields": {
+    "habit": 9171,
+    "date": "2026-10-10"
+  }
+},
+{
+  "model": "habits.habitcheck",
+  "pk": 9182,
+  "fields": {
+    "habit": 9171,
+    "date": "2026-10-09"
+  }
+},
+{
+  "model": "habits.habitcheck",
+  "pk": 9183,
+  "fields": {
+    "habit": 9171,
+    "date": "2026-10-03"
+  }
+},
+{
+  "model": "habits.habitcheck",
+  "pk": 9184,
+  "fields": {
+    "habit": 9171,
+    "date": "2026-10-01"
+  }
+},
+{
+  "model": "habits.habitcheck",
+  "pk": 9185,
+  "fields": {
+    "habit": 9171,
+    "date": "2026-09-30"
+  }
+},
+{
+  "model": "habits.habitcheck",
+  "pk": 9186,
+  "fields": {
+    "habit": 9171,
+    "date": "2026-09-24"
+  }
+},
+{
+  "model": "focus.pomodorosession",
+  "pk": 9187,
+  "fields": {
+    "user": 9001,
+    "subject": 9009,
+    "started_at": "2026-11-02T09:23:31.087Z",
+    "duration_min": 25
+  }
+},
+{
+  "model": "focus.pomodorosession",
+  "pk": 9188,
+  "fields": {
+    "user": 9001,
+    "subject": 9009,
+    "started_at": "2026-11-02T06:23:31.087Z",
+    "duration_min": 25
+  }
+},
+{
+  "model": "focus.pomodorosession",
+  "pk": 9189,
+  "fields": {
+    "user": 9001,
+    "subject": 9010,
+    "started_at": "2026-11-01T07:23:31.087Z",
+    "duration_min": 25
+  }
+},
+{
+  "model": "focus.pomodorosession",
+  "pk": 9190,
+  "fields": {
+    "user": 9001,
+    "subject": 9009,
+    "started_at": "2026-11-01T09:23:31.087Z",
+    "duration_min": 25
+  }
+},
+{
+  "model": "focus.pomodorosession",
+  "pk": 9191,
+  "fields": {
+    "user": 9001,
+    "subject": 9012,
+    "started_at": "2026-11-01T08:23:31.087Z",
+    "duration_min": 50
+  }
+},
+{
+  "model": "focus.pomodorosession",
+  "pk": 9192,
+  "fields": {
+    "user": 9001,
+    "subject": 9012,
+    "started_at": "2026-10-31T04:23:31.087Z",
+    "duration_min": 50
+  }
+},
+{
+  "model": "focus.pomodorosession",
+  "pk": 9193,
+  "fields": {
+    "user": 9001,
+    "subject": 9012,
+    "started_at": "2026-10-30T08:23:31.087Z",
+    "duration_min": 25
+  }
+},
+{
+  "model": "focus.pomodorosession",
+  "pk": 9194,
+  "fields": {
+    "user": 9001,
+    "subject": 9010,
+    "started_at": "2026-10-30T05:23:31.087Z",
+    "duration_min": 25
+  }
+},
+{
+  "model": "focus.pomodorosession",
+  "pk": 9195,
+  "fields": {
+    "user": 9001,
+    "subject": 9009,
+    "started_at": "2026-10-30T11:23:31.087Z",
+    "duration_min": 25
+  }
+},
+{
+  "model": "focus.pomodorosession",
+  "pk": 9196,
+  "fields": {
+    "user": 9001,
+    "subject": 9012,
+    "started_at": "2026-10-29T09:23:31.087Z",
+    "duration_min": 25
+  }
+},
+{
+  "model": "focus.pomodorosession",
+  "pk": 9197,
+  "fields": {
+    "user": 9001,
+    "subject": 9009,
+    "started_at": "2026-10-28T08:23:31.087Z",
+    "duration_min": 25
+  }
+},
+{
+  "model": "focus.pomodorosession",
+  "pk": 9198,
+  "fields": {
+    "user": 9001,
+    "subject": 9012,
+    "started_at": "2026-10-28T09:23:31.087Z",
+    "duration_min": 50
+  }
+},
+{
+  "model": "focus.pomodorosession",
+  "pk": 9199,
+  "fields": {
+    "user": 9001,
+    "subject": 9012,
+    "started_at": "2026-10-28T06:23:31.087Z",
+    "duration_min": 50
+  }
+},
+{
+  "model": "focus.pomodorosession",
+  "pk": 9200,
+  "fields": {
+    "user": 9001,
+    "subject": 9012,
+    "started_at": "2026-10-27T05:23:31.087Z",
+    "duration_min": 25
+  }
+},
+{
+  "model": "focus.pomodorosession",
+  "pk": 9201,
+  "fields": {
+    "user": 9001,
+    "subject": 9012,
+    "started_at": "2026-10-27T04:23:31.087Z",
+    "duration_min": 25
+  }
+},
+{
+  "model": "focus.pomodorosession",
+  "pk": 9202,
+  "fields": {
+    "user": 9001,
+    "subject": 9011,
+    "started_at": "2026-10-27T08:23:31.087Z",
+    "duration_min": 50
+  }
+},
+{
+  "model": "focus.pomodorosession",
+  "pk": 9203,
+  "fields": {
+    "user": 9001,
+    "subject": 9011,
+    "started_at": "2026-10-26T08:23:31.087Z",
+    "duration_min": 25
+  }
+},
+{
+  "model": "focus.pomodorosession",
+  "pk": 9204,
+  "fields": {
+    "user": 9001,
+    "subject": 9011,
+    "started_at": "2026-10-26T10:23:31.087Z",
+    "duration_min": 25
+  }
+},
+{
+  "model": "focus.pomodorosession",
+  "pk": 9205,
+  "fields": {
+    "user": 9001,
+    "subject": 9011,
+    "started_at": "2026-10-25T06:23:31.087Z",
+    "duration_min": 50
+  }
+},
+{
+  "model": "focus.pomodorosession",
+  "pk": 9206,
+  "fields": {
+    "user": 9001,
+    "subject": 9010,
+    "started_at": "2026-10-25T10:23:31.087Z",
+    "duration_min": 25
+  }
+},
+{
+  "model": "focus.pomodorosession",
+  "pk": 9207,
+  "fields": {
+    "user": 9001,
+    "subject": 9010,
+    "started_at": "2026-10-24T05:23:31.087Z",
+    "duration_min": 50
+  }
+},
+{
+  "model": "diary.weeklyreflection",
+  "pk": 9208,
+  "fields": {
+    "user": 9001,
+    "week_start": "2026-10-26",
+    "mood": 4,
+    "proud_of": "Сдала лабораторную по Python на отлично",
+    "failed": "Пропустила две тренировки",
+    "carry_over": "Подготовка к SQL"
+  }
+},
+{
+  "model": "diary.weeklyreflection",
+  "pk": 9209,
+  "fields": {
+    "user": 9001,
+    "week_start": "2026-10-19",
+    "mood": 3,
+    "proud_of": "Каждый день учила слова",
+    "failed": "Мало спала",
+    "carry_over": "Глава курсовой"
+  }
+},
+{
+  "model": "diary.weeklyreflection",
+  "pk": 9210,
+  "fields": {
+    "user": 9001,
+    "week_start": "2026-10-12",
+    "mood": 5,
+    "proud_of": "Закрыла все долги за месяц!",
+    "failed": "",
+    "carry_over": "Начать курсовую"
+  }
+}
+]

@@ -1,0 +1,61 @@
+{% extends "app.html" %}
+{% load static %}
+{% block title %}Мой сад{% endblock %}
+
+{% block content %}
+<div class="page-head">
+    <h1>Мой сад 🌸</h1>
+    <p class="muted">Каждый месяц — новый цветок. Чем больше сделано, тем пышнее букет.</p>
+</div>
+
+<section class="panel" aria-labelledby="garden-summary-title" style="margin-bottom:16px">
+    <h2 id="garden-summary-title" class="visually-hidden">Итоги</h2>
+    <div class="grid-3" id="garden-summary" style="grid-template-columns:repeat(4,minmax(0,1fr))"></div>
+</section>
+
+<div class="garden-grid" id="garden"></div>
+<p class="small muted" style="margin-top:12px">
+    🌱 0–24% · 🌿 25–49% · 🌷 50–79% · 💐 80–100% выполненных задач.
+    Когда месяц заканчивается, его цветок сохраняется навсегда.
+</p>
+{% endblock %}
+
+{% block scripts %}
+<script>
+(() => {
+  const { el, $ } = Bloom;
+  const box = $('#garden');
+
+  (async () => {
+    Bloom.loading(box);
+    try {
+      const months = await Bloom.getAll('months/');
+      const counts = { seedling: 0, stem: 0, bud: 0, bouquet: 0 };
+      months.forEach((m) => { counts[m.progress.stage] += 1; });
+      $('#garden-summary').replaceChildren(...Object.entries(Bloom.STAGES).map(([key, stage]) =>
+        el('div', { class: 'stat' }, el('strong', {}, `${stage.emoji} ${counts[key]}`), el('span', { class: 'muted small' }, stage.label))));
+
+      if (!months.length) {
+        Bloom.empty(box, '🌱', 'Сад пока пуст. Создай план месяца и выполняй задачи — здесь вырастет первый цветок!');
+        return;
+      }
+      box.replaceChildren(...months.map((m) => {
+        const stage = Bloom.STAGES[m.progress.stage];
+        return el('a', {
+          class: 'bouquet' + (m.is_finished ? '' : ' growing'),
+          href: `/month/?year=${m.year}&month=${m.month}`,
+          style: 'text-decoration:none;color:inherit',
+          'aria-label': `${Bloom.MONTHS[m.month - 1]} ${m.year}: ${stage.label}, ${m.progress.percent}%`,
+        },
+          el('div', { class: 'flower-emoji', 'aria-hidden': 'true' }, stage.emoji),
+          el('h3', { style: 'margin:6px 0 2px' }, `${Bloom.MONTHS[m.month - 1]} ${m.year}`),
+          el('div', { class: 'small' }, m.title),
+          el('div', { class: 'small muted' },
+            el('span', { class: 'num' }, `${m.progress.percent}%`), ` · ${m.progress.done}/${m.progress.total} задач`),
+          el('span', { class: 'badge', style: 'margin-top:6px' }, m.is_finished ? 'сохранён 💐' : 'ещё растёт 🌱'));
+      }));
+    } catch (error) { Bloom.failed(box, error); }
+  })();
+})();
+</script>
+{% endblock %}

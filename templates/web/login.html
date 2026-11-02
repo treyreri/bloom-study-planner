@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Вход{% endblock %}
+
+{% block body %}
+<div class="public">
+    <header class="public-top">
+        <a class="brand" href="{% url 'home' %}"><img src="{% static 'img/hearts/heart-mid.svg' %}" alt=""> Bloom</a>
+    </header>
+    <main class="auth-wrap">
+        <form class="card auth-card" method="post" novalidate>
+            {% csrf_token %}
+            <h1>С возвращением 🌷</h1>
+            {% include "web/_form_fields.html" %}
+            <input type="hidden" name="next" value="{{ next }}">
+            <button type="submit" class="btn">Войти</button>
+            <p class="small muted" style="text-align:center;margin-top:12px">
+                Нет аккаунта? <a href="{% url 'register' %}">Зарегистрироваться</a>
+            </p>
+        </form>
+    </main>
+</div>
+{% endblock %}

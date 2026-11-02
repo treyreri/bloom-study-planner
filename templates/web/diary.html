@@ -1,0 +1,54 @@
+{% extends "app.html" %}
+{% load static %}
+{% block title %}Дневник{% endblock %}
+
+{% block content %}
+<div class="page-head">
+    <h1>Diary 💌</h1>
+    <p class="muted">Раз в неделю — честный разговор с собой.</p>
+</div>
+
+<div class="grid-2">
+    <section class="card" aria-labelledby="reflection-title">
+        <h2 id="reflection-title">Рефлексия недели</h2>
+        <form id="reflection-form" novalidate>
+            <div class="field">
+                <label for="week-start">Неделя (с понедельника)</label>
+                <input type="date" id="week-start" name="week_start" required>
+                <span class="helptext" id="week-range"></span>
+            </div>
+            <fieldset class="mood-picker">
+                <legend>Настроение</legend>
+                <input type="radio" name="mood" id="mood-1" value="1"><label for="mood-1" title="Очень грустно">😢</label>
+                <input type="radio" name="mood" id="mood-2" value="2"><label for="mood-2" title="Грустно">😕</label>
+                <input type="radio" name="mood" id="mood-3" value="3"><label for="mood-3" title="Нормально">😐</label>
+                <input type="radio" name="mood" id="mood-4" value="4"><label for="mood-4" title="Хорошо">🙂</label>
+                <input type="radio" name="mood" id="mood-5" value="5"><label for="mood-5" title="Прекрасно">🥰</label>
+            </fieldset>
+            <div class="field">
+                <label for="proud-of">Чем горжусь</label>
+                <textarea id="proud-of" name="proud_of" rows="3"></textarea>
+            </div>
+            <div class="field">
+                <label for="failed">Что не получилось</label>
+                <textarea id="failed" name="failed" rows="3"></textarea>
+            </div>
+            <div class="field">
+                <label for="carry-over">Что переношу на следующую неделю</label>
+                <textarea id="carry-over" name="carry_over" rows="3"></textarea>
+            </div>
+            <p class="form-error" role="alert"></p>
+            <button type="submit" class="btn" id="reflection-submit">Сохранить</button>
+        </form>
+    </section>
+
+    <section aria-labelledby="feed-title">
+        <h2 id="feed-title">Прошлые недели</h2>
+        <div class="grid" id="reflection-feed"></div>
+    </section>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'js/diary.js' %}"></script>
+{% endblock %}

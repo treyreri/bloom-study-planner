@@ -1,0 +1,76 @@
+{% extends "app.html" %}
+{% load static %}
+{% block title %}Мой месяц{% endblock %}
+
+{% block content %}
+<div class="page-head">
+    <h1>My Month 🗓️</h1>
+    <div class="chips" role="group" aria-label="Выбор месяца">
+        <button type="button" class="chip" id="prev-month" aria-label="Предыдущий месяц">←</button>
+        <strong id="month-label" aria-live="polite" style="min-width:9em;text-align:center;align-self:center"></strong>
+        <button type="button" class="chip" id="next-month" aria-label="Следующий месяц">→</button>
+    </div>
+</div>
+
+<div class="grid-3">
+    <section class="panel span-2" aria-labelledby="calendar-title">
+        <h2 id="calendar-title" class="visually-hidden">Календарь</h2>
+        <div class="calendar" id="calendar"></div>
+        <p class="small muted" style="margin:8px 0 0">♥ — выполнено, ♡ — запланировано. Нажми на день, чтобы увидеть задачи.</p>
+    </section>
+
+    <div class="grid">
+        <section class="card" aria-labelledby="plan-title">
+            <div id="plan-view"></div>
+            <form id="plan-form" hidden novalidate>
+                <h2 id="plan-title">План месяца</h2>
+                <div class="field">
+                    <label for="plan-title-input">Название</label>
+                    <input type="text" id="plan-title-input" name="title" maxlength="150" required placeholder="Ноябрь — сессия!">
+                </div>
+                <div class="field">
+                    <label for="plan-goal">Главная цель месяца</label>
+                    <textarea id="plan-goal" name="main_goal" rows="2"></textarea>
+                </div>
+                <fieldset style="border:0;padding:0;margin:0 0 8px">
+                    <legend class="muted small">Фокус-цели (до 3)</legend>
+                    <input type="text" name="focus_1" maxlength="200" aria-label="Фокус-цель 1" style="margin-bottom:6px">
+                    <input type="text" name="focus_2" maxlength="200" aria-label="Фокус-цель 2" style="margin-bottom:6px">
+                    <input type="text" name="focus_3" maxlength="200" aria-label="Фокус-цель 3">
+                </fieldset>
+                <p class="form-error" role="alert"></p>
+                <div class="dialog-actions">
+                    <button type="button" class="btn ghost" id="plan-cancel" hidden>Отмена</button>
+                    <button type="submit" class="btn">Сохранить</button>
+                </div>
+            </form>
+        </section>
+
+        <section class="panel" aria-labelledby="month-flower-title">
+            <h2 id="month-flower-title">Цветок месяца</h2>
+            <div id="flower"></div>
+        </section>
+    </div>
+
+    <section class="panel span-2" aria-labelledby="day-title">
+        <div class="panel-head">
+            <h2 id="day-title">Задачи дня</h2>
+        </div>
+        <form id="day-add" novalidate>
+            <div class="capsule">
+                <label for="day-add-title" class="visually-hidden">Новая задача на выбранный день</label>
+                <input type="text" id="day-add-title" name="title" maxlength="200" placeholder="Добавить задачу на этот день" autocomplete="off">
+                <button type="submit" class="btn">+</button>
+            </div>
+            <p class="form-error" role="alert"></p>
+        </form>
+        <ul class="task-list" id="day-tasks" style="margin-top:8px"></ul>
+    </section>
+</div>
+{% include "web/_task_dialog.html" %}
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'js/tasks.js' %}"></script>
+<script src="{% static 'js/month.js' %}"></script>
+{% endblock %}

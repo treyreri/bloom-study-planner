@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% load static %}
+{% comment %}
+  Layout of every page after login: sidebar on desktop, bottom bar on phones.
+  Pages extend this template and fill {% block content %}.
+{% endcomment %}
+
+{% block body %}
+{% with current=request.resolver_match.url_name profile=request.user.profile %}
+<div class="app">
+    <aside class="sidebar" aria-label="Главное меню">
+        <a class="brand" href="{% url 'today' %}">
+            <img src="{% static 'img/hearts/heart-mid.svg' %}" alt=""> Bloom
+        </a>
+        <nav>
+            {% for item in nav_items %}
+            <a class="nav-link" href="{% url item.name %}" {% if current == item.name %}aria-current="page"{% endif %}>
+                <span class="icon" aria-hidden="true">{{ item.icon }}</span>{{ item.label }}
+            </a>
+            {% endfor %}
+        </nav>
+
+        <div class="sidebar-user">
+            {% if profile.avatar %}
+                <img class="avatar" src="{{ profile.avatar.url }}" alt="">
+            {% else %}
+                <span class="avatar" aria-hidden="true">🌷</span>
+            {% endif %}
+            <div class="who">
+                <strong>{{ request.user.first_name|default:request.user.username }}</strong>
+                <form method="post" action="{% url 'logout' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="icon-btn small">Выйти ↩</button>
+                </form>
+            </div>
+        </div>
+    </aside>
+
+    <main class="main" id="main">
+        {% block content %}{% endblock %}
+    </main>
+</div>
+
+{# Mobile navigation: 4 main pages + "Ещё" (TZ 6.3: menu at the bottom, 5 icons) #}
+<nav class="bottom-nav" aria-label="Меню">
+    {% for item in nav_items %}{% if item.in_bar %}
+    <a href="{% url item.name %}" {% if current == item.name %}aria-current="page"{% endif %}>
+        <span class="icon" aria-hidden="true">{{ item.icon }}</span>{{ item.label }}
+    </a>
+    {% endif %}{% endfor %}
+    <button type="button" data-more-toggle aria-expanded="false" aria-controls="more-sheet">
+        <span class="icon" aria-hidden="true">🌸</span>Ещё
+    </button>
+</nav>
+<div class="more-sheet" id="more-sheet" hidden>
+    {% for item in nav_items %}{% if not item.in_bar %}
+    <a class="nav-link" href="{% url item.name %}" {% if current == item.name %}aria-current="page"{% endif %}>
+        <span class="icon" aria-hidden="true">{{ item.icon }}</span>{{ item.label }}
+    </a>
+    {% endif %}{% endfor %}
+    <form method="post" action="{% url 'logout' %}">
+        {% csrf_token %}
+        <button type="submit" class="nav-link icon-btn" style="width:100%">
+            <span class="icon" aria-hidden="true">↩</span>Выйти
+        </button>
+    </form>
+</div>
+{% endwith %}
+{% endblock %}

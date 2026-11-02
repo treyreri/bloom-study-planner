@@ -1,36 +1,27 @@
-{% load static %}
-<!DOCTYPE html>
+{% load static %}<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token }}">
+    <meta name="theme-color" content="#F8ECEA">
 
-    <title>{% block title %}Bloom Planner{% endblock %}</title>
+    <title>{% block title %}Bloom{% endblock %} · Bloom 🌷</title>
+    <link rel="icon" href="{% static 'img/hearts/heart-mid.svg' %}" type="image/svg+xml">
 
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    {# Handwritten fonts: Patrick Hand (Latin) + Neucha (Cyrillic), Quicksand for numbers.  #}
+    {# Loaded without blocking the page (media="print" trick); until they arrive, or if     #}
+    {# Google Fonts is unreachable, the CSS falls back to system fonts.                     #}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Neucha&family=Patrick+Hand&family=Quicksand:wght@500;600;700&display=swap" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="{% static 'css/bloom.css' %}">
+    {% block head %}{% endblock %}
 </head>
-<body>
-    <div class="app-layout">
-        <aside class="sidebar">
-            <a class="brand" href="/">🌸 Bloom</a>
+<body data-today="{% now 'Y-m-d' %}" data-accent="{{ request.user.profile.accent_color|default:'pink' }}" class="{% block body_class %}{% endblock %}">
+    {% block body %}{% endblock %}
 
-            <nav>
-                <a href="/today/">Сегодня</a>
-                <a href="/month/">Мой месяц</a>
-                <a href="/tasks/">Задачи</a>
-                <a href="/study/">Учёба</a>
-                <a href="/habits/">Привычки</a>
-                <a href="/focus/">Pomodoro</a>
-                <a href="/diary/">Рефлексия</a>
-                <a href="/garden/">Мой сад</a>
-            </nav>
-        </aside>
-
-        <main class="main-content">
-            {% block content %}{% endblock %}
-        </main>
-    </div>
-
+    <script src="{% static 'js/api.js' %}"></script>
     {% block scripts %}{% endblock %}
 </body>
 </html>

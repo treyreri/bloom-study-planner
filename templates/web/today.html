@@ -1,0 +1,79 @@
+{% extends "app.html" %}
+{% load static %}
+{% block title %}Сегодня{% endblock %}
+
+{% block content %}
+<div class="page-head">
+    <div>
+        <h1 id="greeting">Привет! 🌷</h1>
+        <p class="muted" id="today-date"></p>
+    </div>
+    <a class="btn" href="{% url 'focus' %}?start=1">Начать помодоро 🍅</a>
+</div>
+
+{# Order follows TZ 3.9: quote, today's tasks, deadline, habits, flower, pomodoro #}
+<div class="dashboard">
+    <div class="grid">
+        <section class="panel" aria-label="Цитата дня">
+            <blockquote class="quote" id="quote"><p class="loading">Загружаем</p></blockquote>
+        </section>
+
+        <section class="card" aria-labelledby="tasks-title">
+            <div class="panel-head">
+                <h2 id="tasks-title">Задачи на сегодня 💗</h2>
+                <span class="muted small" id="tasks-count"></span>
+            </div>
+            <form id="today-add" novalidate>
+                <div class="capsule">
+                    <label for="today-add-title" class="visually-hidden">Новая задача на сегодня</label>
+                    <input type="text" id="today-add-title" name="title" maxlength="200" placeholder="Новая задача на сегодня" autocomplete="off">
+                    <button type="submit" class="btn" aria-label="Добавить задачу">+</button>
+                </div>
+                <p class="form-error" role="alert"></p>
+            </form>
+            <ul class="task-list" id="today-tasks" style="margin-top:8px"></ul>
+        </section>
+    </div>
+
+    <div class="grid">
+        <section class="panel" aria-labelledby="deadline-title">
+            <div class="panel-head">
+                <h2 id="deadline-title">Ближайший дедлайн</h2>
+                <a class="small" href="{% url 'study' %}#deadlines">все →</a>
+            </div>
+            <div id="deadline"></div>
+        </section>
+
+        <section class="panel" aria-labelledby="habits-title">
+            <div class="panel-head">
+                <h2 id="habits-title">Привычки ✨</h2>
+                <a class="small" href="{% url 'habits' %}">трекер →</a>
+            </div>
+            <ul class="list" id="today-habits"></ul>
+        </section>
+
+        <section class="panel" aria-labelledby="flower-title">
+            <div class="panel-head">
+                <h2 id="flower-title">Цветок месяца</h2>
+                <a class="small" href="{% url 'month' %}">месяц →</a>
+            </div>
+            <div id="flower"></div>
+        </section>
+
+        <section class="panel" aria-labelledby="focus-title">
+            <h2 id="focus-title">Фокус ⏳</h2>
+            <div class="grid-2" style="grid-template-columns:1fr 1fr;margin-bottom:12px">
+                <div class="stat"><strong id="focus-today">0</strong><span class="muted small">мин сегодня</span></div>
+                <div class="stat"><strong id="focus-week">0</strong><span class="muted small">мин за неделю</span></div>
+            </div>
+            <a class="btn" style="width:100%" href="{% url 'focus' %}?start=1">Начать помодоро 🍅</a>
+        </section>
+    </div>
+</div>
+{% include "web/_task_dialog.html" %}
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'js/tasks.js' %}"></script>
+<script src="{% static 'js/today.js' %}"></script>
+{% endblock %}

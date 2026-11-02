@@ -1,17 +1,24 @@
+"""
+Settings shared by development and production.
+
+dev.py and prod.py import everything from here and change only
+what differs between the two environments.
+Secrets are read from the .env file with python-decouple.
+"""
+from datetime import timedelta
 from pathlib import Path
 
+from decouple import config
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/6.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-&@g$y5#oack$m(t&ely#@=zge4-gz8h$#0mg1=mjfk9ouxi)8w'
+# dev.py provides a fallback key, prod.py requires it in .env.
+SECRET_KEY = config('SECRET_KEY', default='')
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = []
 
@@ -29,6 +36,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
     'drf_spectacular',
+    'drf_spectacular_sidecar',  # Swagger UI / ReDoc files served locally, no CDN
     'django_filters',
     'accounts',
     'planner',
@@ -55,13 +63,14 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'web.context_processors.navigation',
             ],
         },
     },
@@ -71,7 +80,7 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 
 # Database
-# https://docs.djangoproject.com/en/6.1/ref/settings/#databases
+# SQLite by default; prod.py switches to PostgreSQL.
 
 DATABASES = {
     'default': {
@@ -82,7 +91,6 @@ DATABASES = {
 
 
 # Password validation
-# https://docs.djangoproject.com/en/6.1/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -99,27 +107,34 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'today'
+LOGOUT_REDIRECT_URL = 'home'
+
 
 # Internationalization
-# https://docs.djangoproject.com/en/6.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ru'
 
-TIME_ZONE = 'UTC'
+# "Today", habit streaks and done_at all depend on this time zone.
+TIME_ZONE = config('TIME_ZONE', default='Europe/Moscow')
 
 USE_I18N = True
 
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/6.1/howto/static-files/
+# Static files (CSS, JavaScript, Images) and uploaded media (avatars)
 
 STATIC_URL = 'static/'
+STATICFILES_DIRS = [BASE_DIR / 'static']
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+MEDIA_URL = 'media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 
 
 # Email
-# https://docs.djangoproject.com/en/6.1/topics/email/#topic-email-configuration
 
 MAILERS = {
     'default': {
@@ -127,9 +142,16 @@ MAILERS = {
     },
 }
 
+
+# Django REST Framework
+# JWT is used by API clients (Swagger, Postman, mobile apps).
+# The website itself uses the Django session cookie + CSRF token,
+# so no tokens are ever stored in the browser's JavaScript.
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
@@ -142,16 +164,29 @@ REST_FRAMEWORK = {
         'rest_framework.filters.SearchFilter',
         'rest_framework.filters.OrderingFilter',
     ],
+    'DEFAULT_THROTTLE_RATES': {
+        # used by register and token endpoints (ScopedRateThrottle)
+        'auth': '20/minute',
+    },
 }
 
 SPECTACULAR_SETTINGS = {
     'TITLE': 'Bloom Planner API',
-    'DESCRIPTION': 'API for the Bloom student study planner.',
+    'DESCRIPTION': (
+        'API for the Bloom student study planner. '
+        'Get a token with POST /api/v1/auth/token/, then press '
+        '"Authorize" and paste the access token.'
+    ),
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
+    'COMPONENT_SPLIT_REQUEST': True,
+    'SWAGGER_UI_DIST': 'SIDECAR',
+    'SWAGGER_UI_FAVICON_HREF': 'SIDECAR',
+    'REDOC_DIST': 'SIDECAR',
+    'ENUM_NAME_OVERRIDES': {
+        'FlowerStageEnum': 'planner.models.MonthPlan.FLOWER_STAGE_CHOICES',
+    },
 }
-
-from datetime import timedelta
 
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),

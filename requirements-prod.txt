@@ -1,0 +1,4 @@
+# Production server extras (Linux hosting such as Render)
+-r requirements.txt
+gunicorn>=23,<24
+psycopg[binary]>=3.2,<4
