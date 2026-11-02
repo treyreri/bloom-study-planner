@@ -1,0 +1,36 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{% block title %}Bloom Planner{% endblock %}</title>
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <div class="app-layout">
+        <aside class="sidebar">
+            <a class="brand" href="/">🌸 Bloom</a>
+
+            <nav>
+                <a href="/today/">Сегодня</a>
+                <a href="/month/">Мой месяц</a>
+                <a href="/tasks/">Задачи</a>
+                <a href="/study/">Учёба</a>
+                <a href="/habits/">Привычки</a>
+                <a href="/focus/">Pomodoro</a>
+                <a href="/diary/">Рефлексия</a>
+                <a href="/garden/">Мой сад</a>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+
+    {% block scripts %}{% endblock %}
+</body>
+</html>

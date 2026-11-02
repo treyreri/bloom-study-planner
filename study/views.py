@@ -13,6 +13,9 @@ class SubjectViewSet(viewsets.ModelViewSet):
     filterset_fields = ['name', 'color']
     search_fields = ['name', 'teacher', 'room']
     ordering_fields = ['name']
+    filterset_fields = ["name", "color"]
+    search_fields = ["name", "teacher", "room"]
+    ordering_fields = ["name"]
     def get_queryset(self):
         return Subject.objects.filter(user=self.request.user)
 
@@ -26,6 +29,9 @@ class DeadlineViewSet(viewsets.ModelViewSet):
     filterset_fields = ['kind', 'due_date', 'subject']
     search_fields = ['title']
     ordering_fields = ['due_date', 'title']
+    filterset_fields = ["kind", "due_date", "subject"]
+    search_fields = ["title"]
+    ordering_fields = ["due_date", "title"]
     def get_queryset(self):
         return Deadline.objects.filter(
             user=self.request.user ).select_related('subject')

@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import MonthPlan, Task, Quote
-
+from django.utils import timezone
 
 class MonthPlanSerializer(serializers.ModelSerializer):
     class Meta:
@@ -19,6 +19,17 @@ class TaskSerializer(serializers.ModelSerializer):
             'title', 'description', 'date', 'priority',
             'is_done', 'done_at', 'created_at', ]
         read_only_fields = ['id', 'done_at', 'created_at']
+
+    def update(self, instance, validated_data):
+        is_done = validated_data.get(
+            "is_done", instance.is_done )
+
+        if is_done and not instance.is_done:
+            instance.done_at = timezone.now()
+
+        elif not is_done:
+            instance.done_at = None
+        return super().update(instance, validated_data)
 
     def validate(self, attrs):
         request = self.context.get('request')

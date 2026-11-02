@@ -1,7 +1,8 @@
 
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-
+from django.urls import path, include
+from .views import DashboardStatsView
 from planner.views import MonthPlanViewSet, TaskViewSet, QuoteViewSet
 from study.views import SubjectViewSet, DeadlineViewSet, ScheduleSlotViewSet
 from habits.views import HabitViewSet, HabitCheckViewSet
@@ -33,4 +34,6 @@ router.register('reflections', WeeklyReflectionViewSet, basename='reflection')
 
 urlpatterns = [
     path('', include(router.urls)),
+    path("dashboard/", DashboardStatsView.as_view(), name="dashboard"),
+    path("", include(router.urls)),
 ]
