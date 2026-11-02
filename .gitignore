@@ -25,3 +25,7 @@ staticfiles/
 # Operating system
 .DS_Store
 Thumbs.db
+
+# Frontend (React / Vite)
+node_modules/
+frontend/dist/

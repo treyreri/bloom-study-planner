@@ -75,3 +75,12 @@ class DashboardStatsView(APIView):
             'focus_minutes_today': focus_today,
             'focus_minutes_week': focus_week,
         })
+
+
+class ServerDateView(APIView):
+    """Today's date in the server time zone (TIME_ZONE), the "today" every page uses."""
+    permission_classes = [IsAuthenticated]
+
+    @extend_schema(responses=OpenApiTypes.OBJECT)
+    def get(self, request):
+        return Response({'date': timezone.localdate()})

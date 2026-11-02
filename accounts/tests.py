@@ -152,3 +152,45 @@ class WebAuthTests(APITestCase):
             response = self.client.get(reverse(name))
             self.assertEqual(response.status_code, 302, name)
             self.assertIn(reverse('login'), response['Location'])
+
+
+class FormAuthApiTests(APITestCase):
+    """Login/registration used by the React website: Django form messages + JWT."""
+
+    def test_form_login_success_returns_jwt(self):
+        User.objects.create_user('alice', password=PASSWORD)
+        response = self.client.post('/api/v1/auth/form-login/', {'username': 'alice', 'password': PASSWORD})
+        self.assertEqual(response.status_code, 200)
+        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {response.data["access"]}')
+        self.assertEqual(self.client.get('/api/v1/profile/').data['username'], 'alice')
+
+    def test_form_login_wrong_password_uses_django_message(self):
+        User.objects.create_user('alice', password=PASSWORD)
+        response = self.client.post('/api/v1/auth/form-login/', {'username': 'alice', 'password': 'nope'})
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.data['errors']['__all__'], [
+            'Пожалуйста, введите правильные имя пользователя и пароль. '
+            'Оба поля могут быть чувствительны к регистру.'])
+
+    def test_form_login_empty_fields(self):
+        response = self.client.post('/api/v1/auth/form-login/', {'username': '', 'password': ''})
+        self.assertEqual(response.data['errors'], {
+            'username': ['Обязательное поле.'], 'password': ['Обязательное поле.']})
+
+    def test_form_register_creates_user_profile_and_tokens(self):
+        response = self.client.post('/api/v1/auth/form-register/', {
+            'username': 'alice', 'email': '', 'password1': PASSWORD, 'password2': PASSWORD})
+        self.assertEqual(response.status_code, 201)
+        self.assertIn('access', response.data)
+        self.assertTrue(Profile.objects.filter(user__username='alice').exists())
+
+    def test_form_register_errors_match_the_old_form(self):
+        User.objects.create_user('demo', email='demo@example.com', password=PASSWORD)
+        response = self.client.post('/api/v1/auth/form-register/', {
+            'username': 'demo', 'email': 'demo@example.com', 'password1': PASSWORD, 'password2': PASSWORD})
+        self.assertEqual(response.data['errors'], {
+            'username': ['Пользователь с таким именем уже существует.'],
+            'email': ['Пользователь с таким email уже существует.']})
+        response = self.client.post('/api/v1/auth/form-register/', {
+            'username': 'newgirl', 'password1': PASSWORD, 'password2': 'other'})
+        self.assertEqual(response.data['errors'], {'password2': ['Введенные пароли не совпадают.']})

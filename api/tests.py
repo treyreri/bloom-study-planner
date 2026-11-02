@@ -80,3 +80,13 @@ class SwaggerTests(APITestCase):
     def test_schema_and_docs_are_available(self):
         self.assertEqual(self.client.get('/api/schema/').status_code, 200)
         self.assertEqual(self.client.get('/api/docs/').status_code, 200)
+
+
+class ServerDateTests(APITestCase):
+    def test_server_date_is_local_today(self):
+        self.client.force_authenticate(User.objects.create_user('alice'))
+        response = self.client.get('/api/v1/server-date/')
+        self.assertEqual(response.data, {'date': timezone.localdate()})
+
+    def test_requires_login(self):
+        self.assertEqual(self.client.get('/api/v1/server-date/').status_code, 401)

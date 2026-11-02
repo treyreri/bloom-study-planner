@@ -1,6 +1,8 @@
 from django.urls import path
 
-from .views import ( RegisterView, LoginView, RefreshView, ProfileView, LogoutView, )
+from .views import (
+    RegisterView, LoginView, RefreshView, ProfileView, LogoutView,
+    FormLoginView, FormRegisterView, )
 
 # Mounted at /api/v1/auth/
 urlpatterns = [
@@ -13,4 +15,7 @@ urlpatterns = [
     path('refresh/', RefreshView.as_view(), name='refresh'),
     path('logout/', LogoutView.as_view(), name='logout'),
     path('profile/', ProfileView.as_view(), name='auth-profile'),
+    # used by the React website: same Django forms and messages as before
+    path('form-login/', FormLoginView.as_view(), name='form-login'),
+    path('form-register/', FormRegisterView.as_view(), name='form-register'),
 ]

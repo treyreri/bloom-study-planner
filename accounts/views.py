@@ -10,8 +10,11 @@ from rest_framework_simplejwt.views import (
     TokenObtainPairView, TokenRefreshView, )
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.exceptions import TokenError
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.models import update_last_login
 from drf_spectacular.utils import extend_schema, inline_serializer
 from rest_framework import serializers
+from .forms import RegisterForm
 from .models import Profile
 from .serializers import RegisterSerializer, ProfileSerializer
 
@@ -68,3 +71,58 @@ class LogoutView(APIView):
         return Response(
             {'message': 'Вы вышли из аккаунта.'},
             status=status.HTTP_200_OK )
+
+
+# ---------------------------------------------------------------------------
+# Login and registration for the React website.
+# They run the same Django forms the old template pages used, so the website
+# shows exactly the same validation messages, and answer with a JWT pair.
+
+FormTokens = inline_serializer('FormTokens', {
+    'access': serializers.CharField(), 'refresh': serializers.CharField()})
+FormErrors = inline_serializer('FormErrors', {
+    'errors': serializers.DictField(child=serializers.ListField(child=serializers.CharField()))})
+
+
+def tokens_for(user):
+    refresh = RefreshToken.for_user(user)
+    return {'access': str(refresh.access_token), 'refresh': str(refresh)}
+
+
+class FormLoginView(APIView):
+    """Django's AuthenticationForm: field errors under 'errors', '__all__' = wrong password."""
+    permission_classes = [permissions.AllowAny]
+    authentication_classes = []
+
+    @extend_schema(
+        request=inline_serializer('FormLoginRequest', {
+            'username': serializers.CharField(), 'password': serializers.CharField()}),
+        responses={200: FormTokens, 400: FormErrors},
+    )
+    def post(self, request):
+        form = AuthenticationForm(request._request, data=request.data)
+        if not form.is_valid():
+            return Response({'errors': form.errors}, status=status.HTTP_400_BAD_REQUEST)
+        user = form.get_user()
+        update_last_login(None, user)
+        return Response(tokens_for(user))
+
+
+class FormRegisterView(APIView):
+    """The registration form of the website (username, optional email, password1, password2)."""
+    permission_classes = [permissions.AllowAny]
+    authentication_classes = []
+
+    @extend_schema(
+        request=inline_serializer('FormRegisterRequest', {
+            'username': serializers.CharField(), 'email': serializers.CharField(required=False),
+            'password1': serializers.CharField(), 'password2': serializers.CharField()}),
+        responses={201: FormTokens, 400: FormErrors},
+    )
+    def post(self, request):
+        form = RegisterForm(data=request.data)
+        if not form.is_valid():
+            return Response({'errors': form.errors}, status=status.HTTP_400_BAD_REQUEST)
+        user = form.save()  # the Profile is created by accounts/signals.py
+        update_last_login(None, user)
+        return Response(tokens_for(user), status=status.HTTP_201_CREATED)
