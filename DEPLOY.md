@@ -88,6 +88,8 @@ The server never builds images. Every push to `main` makes GitHub Actions
 - `ghcr.io/treyreri/bloom-muna-backend` (tags `latest` and the commit SHA)
 - `ghcr.io/treyreri/bloom-muna-frontend` (tags `latest` and the commit SHA)
 
+Both are multi-arch images (linux/amd64 and linux/arm64); Docker picks the server's one automatically.
+
 Wait until that run is green (repository → **Actions** → "Docker images"), then:
 
 ```bash
