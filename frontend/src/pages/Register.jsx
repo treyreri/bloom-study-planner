@@ -1,31 +1,29 @@
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import AuthForm from '../components/AuthForm.jsx';
 
-// Same fields, help texts and attributes as the RegisterForm (UserCreationForm)
+// Same fields, help texts and attributes as the RegisterForm (UserCreationForm);
+// label and help are locale keys (a help key may hold a list)
 const FIELDS = [
-  { name: 'username', label: 'Имя пользователя', type: 'text',
+  { name: 'username', label: 'auth.username', type: 'text',
     attrs: { maxLength: 150, autoCapitalize: 'none', autoComplete: 'username', required: true },
-    help: 'Обязательное поле. Не более 150 символов. Только буквы, цифры и символы @/./+/-/_.' },
-  { name: 'email', label: 'Email (необязательно)', type: 'email', attrs: { maxLength: 320 } },
-  { name: 'password1', label: 'Пароль', type: 'password',
+    help: 'auth.usernameHelp' },
+  { name: 'email', label: 'auth.email', type: 'email', attrs: { maxLength: 320 } },
+  { name: 'password1', label: 'auth.password', type: 'password',
     attrs: { autoComplete: 'new-password', required: true },
-    help: [
-      'Пароль не должен быть слишком похож на другую вашу личную информацию.',
-      'Ваш пароль должен содержать как минимум 8 символов.',
-      'Пароль не должен быть слишком простым и распространенным.',
-      'Пароль не может состоять только из цифр.',
-    ] },
-  { name: 'password2', label: 'Подтверждение пароля', type: 'password',
+    help: 'auth.passwordHelp' },
+  { name: 'password2', label: 'auth.password2', type: 'password',
     attrs: { autoComplete: 'new-password', required: true },
-    help: 'Для подтверждения введите, пожалуйста, пароль ещё раз.' },
+    help: 'auth.password2Help' },
 ];
 
 export default function Register() {
+  const { t } = useTranslation();
   return (
     <AuthForm
-      kind="register" title="Регистрация" heading="Начать цвести 🌱" fields={FIELDS}
-      submitLabel="Создать аккаунт"
-      footer={<>Уже есть аккаунт? <Link to="/login/">Войти</Link></>}
+      kind="register" title={t('auth.registerTitle')} heading={t('auth.registerHeading')} fields={FIELDS}
+      submitLabel={t('auth.registerSubmit')}
+      footer={<>{`${t('auth.haveAccount')} `}<Link to="/login/">{t('auth.login')}</Link></>}
     />
   );
 }

@@ -1,21 +1,22 @@
 /* My Month (/month/?year=2026&month=11): plan, calendar with hearts, flower, day tasks */
 import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { api, getAll } from '../api/client.js';
-import { MONTHS, celebrateIfAllDone, formValues, formatDate, iso, pageTitle, toast, today } from '../lib/bloom.js';
+import { celebrateIfAllDone, formValues, formatDate, iso, monthName, pageTitle, toast, today } from '../lib/bloom.js';
 import { Empty, Failed, Flower, FormError, Loading, useBusy, useFlower } from '../components/ui.jsx';
 import { TaskDialog, TaskItem, useQuickAdd } from '../components/tasks.jsx';
 
-const DOW = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
 const EMPTY_PROGRESS = { total: 0, done: 0, percent: 0, stage: 'seedling' };
 
 export default function Month() {
+  const { t } = useTranslation();
   const start = today();
   const params = new URLSearchParams(window.location.search);
   const ym = useRef({
     year: Number(params.get('year')) || start.getFullYear(),
     month: Number(params.get('month')) || start.getMonth() + 1,   // 1–12
   });
-  const [label, setLabel] = useState('');
+  const [label, setLabel] = useState(null);   // {year, month} shown in the header
   const [plan, setPlan] = useState(null);
   const [planLoaded, setPlanLoaded] = useState(false);
   const [editing, setEditing] = useState(false);
@@ -31,7 +32,7 @@ export default function Month() {
   const dialog = useRef(null);
   const planBusy = useBusy();
 
-  useEffect(() => { document.title = pageTitle('Мой месяц'); }, []);
+  useEffect(() => { document.title = pageTitle(t('month.title')); }, [t]);
 
   // ---------- plan -------------------------------------------------------
 
@@ -80,7 +81,7 @@ export default function Month() {
         ? await api(`months/${planRef.current.id}/`, { method: 'PATCH', body })
         : await api('months/', { method: 'POST', body: { ...body, year, month } });
       planRef.current = saved;
-      toast('План сохранён 🗓️');
+      toast(t('month.planSaved'));
       renderPlan(saved, { animate: true });
     });
   }
@@ -138,7 +139,7 @@ export default function Month() {
 
   async function show() {
     const { year, month } = ym.current;
-    setLabel(`${MONTHS[month - 1]} ${year}`);
+    setLabel({ year, month });
     window.history.replaceState(window.history.state, '', `?year=${year}&month=${month}`);
     setCalendar({ state: 'loading' });
     try {
@@ -179,7 +180,7 @@ export default function Month() {
     const offset = (first.getDay() + 6) % 7;               // Monday first
     const todayIso = iso(today());
     cells = [
-      ...DOW.map((d) => <div key={d} className="dow" aria-hidden="true">{d}</div>),
+      ...t('month.dow', { returnObjects: true }).map((d) => <div key={d} className="dow" aria-hidden="true">{d}</div>),
       ...Array.from({ length: offset }, (_, i) => <div key={`e${i}`} className="day empty" aria-hidden="true" />),
       ...Array.from({ length: daysInMonth }, (_, i) => {
         const date = iso(new Date(year, month - 1, i + 1));
@@ -189,7 +190,7 @@ export default function Month() {
           <button
             key={date} type="button" className={'day' + (date === todayIso ? ' today' : '')}
             aria-pressed={String(date === selected)}
-            aria-label={`${formatDate(date)}: ${info.total} задач, выполнено ${info.done}`}
+            aria-label={t('month.dayLabel', { date: formatDate(date), total: info.total, done: info.done })}
             onClick={() => selectDay(date)}
           >
             <span className="n">{i + 1}</span>
@@ -214,7 +215,7 @@ export default function Month() {
         <TaskItem key={`${day.round}-${task.id}`} task={task} isDone={task.is_done} onChange={onChange} showDate={false}
           onEdit={(t, cb) => dialog.current.open(t, cb)} />
       ))
-      : <Empty icon="🌱">На этот день задач нет.</Empty>;
+      : <Empty icon="🌱">{t('month.noDayTasks')}</Empty>;
   }
 
   const formVisible = planLoaded && (!plan || editing);
@@ -224,18 +225,18 @@ export default function Month() {
     <>
       <div className="page-head">
         <h1>My Month 🗓️</h1>
-        <div className="chips" role="group" aria-label="Выбор месяца">
-          <button type="button" className="chip" id="prev-month" aria-label="Предыдущий месяц" onClick={() => shift(-1)}>←</button>
-          <strong id="month-label" aria-live="polite" style={{ minWidth: '9em', textAlign: 'center', alignSelf: 'center' }}>{label}</strong>
-          <button type="button" className="chip" id="next-month" aria-label="Следующий месяц" onClick={() => shift(1)}>→</button>
+        <div className="chips" role="group" aria-label={t('common.monthPick')}>
+          <button type="button" className="chip" id="prev-month" aria-label={t('common.prevMonth')} onClick={() => shift(-1)}>←</button>
+          <strong id="month-label" aria-live="polite" style={{ minWidth: '9em', textAlign: 'center', alignSelf: 'center' }}>{label ? `${monthName(label.month)} ${label.year}` : ''}</strong>
+          <button type="button" className="chip" id="next-month" aria-label={t('common.nextMonth')} onClick={() => shift(1)}>→</button>
         </div>
       </div>
 
       <div className="grid-3">
         <section className="panel span-2" aria-labelledby="calendar-title">
-          <h2 id="calendar-title" className="visually-hidden">Календарь</h2>
+          <h2 id="calendar-title" className="visually-hidden">{t('month.calendar')}</h2>
           <div className="calendar" id="calendar">{cells}</div>
-          <p className="small muted" style={{ margin: '8px 0 0' }}>♥ — выполнено, ♡ — запланировано. Нажми на день, чтобы увидеть задачи.</p>
+          <p className="small muted" style={{ margin: '8px 0 0' }}>{t('month.legend')}</p>
         </section>
 
         <div className="grid">
@@ -245,45 +246,45 @@ export default function Month() {
                 <>
                   <div className="panel-head">
                     <h2>{plan.title}</h2>
-                    <button type="button" className="icon-btn" aria-label="Редактировать план" onClick={editPlan}>✎</button>
+                    <button type="button" className="icon-btn" aria-label={t('month.editPlan')} onClick={editPlan}>✎</button>
                   </div>
-                  {plan.main_goal ? <p>🎯 {plan.main_goal}</p> : <p className="muted">Главная цель не задана.</p>}
-                  <strong className="small">Фокус-цели</strong>
+                  {plan.main_goal ? <p>🎯 {plan.main_goal}</p> : <p className="muted">{t('month.noGoal')}</p>}
+                  <strong className="small">{t('month.focusGoals')}</strong>
                   {plan.focus_goals.length
                     ? <ul style={{ margin: '4px 0 0', paddingLeft: '20px' }}>{plan.focus_goals.map((g, i) => <li key={i}>{g}</li>)}</ul>
-                    : <p className="muted small">Фокус-целей пока нет.</p>}
-                  {plan.final_stage && <p className="small muted" style={{ marginTop: '8px' }}>Месяц закончился — букет сохранён в саду 💐</p>}
+                    : <p className="muted small">{t('month.noFocusGoals')}</p>}
+                  {plan.final_stage && <p className="small muted" style={{ marginTop: '8px' }}>{t('month.finished')}</p>}
                 </>
               )}
             </div>
             <form id="plan-form" hidden={!formVisible} noValidate ref={formRef} onSubmit={savePlan} key={formRound}>
-              <h2 id="plan-title">{!planLoaded ? 'План месяца' : editing ? 'Редактировать план' : 'Создать план месяца'}</h2>
+              <h2 id="plan-title">{t(!planLoaded ? 'month.planTitle' : editing ? 'month.editPlan' : 'month.createPlan')}</h2>
               <div className="field">
-                <label htmlFor="plan-title-input">Название</label>
-                <input type="text" id="plan-title-input" name="title" maxLength="150" required placeholder="Ноябрь — сессия!"
-                  defaultValue={planLoaded && !plan ? `${MONTHS[month - 1]} ${year}` : ''} />
+                <label htmlFor="plan-title-input">{t('common.title')}</label>
+                <input type="text" id="plan-title-input" name="title" maxLength="150" required placeholder={t('month.planPlaceholder')}
+                  defaultValue={planLoaded && !plan ? `${monthName(month)} ${year}` : ''} />
               </div>
               <div className="field">
-                <label htmlFor="plan-goal">Главная цель месяца</label>
+                <label htmlFor="plan-goal">{t('month.mainGoal')}</label>
                 <textarea id="plan-goal" name="main_goal" rows="2"></textarea>
               </div>
               <fieldset style={{ border: 0, padding: 0, margin: '0 0 8px' }}>
-                <legend className="muted small">Фокус-цели (до 3)</legend>
-                <input type="text" name="focus_1" maxLength="200" aria-label="Фокус-цель 1" style={{ marginBottom: '6px' }} />
-                <input type="text" name="focus_2" maxLength="200" aria-label="Фокус-цель 2" style={{ marginBottom: '6px' }} />
-                <input type="text" name="focus_3" maxLength="200" aria-label="Фокус-цель 3" />
+                <legend className="muted small">{t('month.focusGoalsLegend')}</legend>
+                <input type="text" name="focus_1" maxLength="200" aria-label={t('month.focusGoal', { n: 1 })} style={{ marginBottom: '6px' }} />
+                <input type="text" name="focus_2" maxLength="200" aria-label={t('month.focusGoal', { n: 2 })} style={{ marginBottom: '6px' }} />
+                <input type="text" name="focus_3" maxLength="200" aria-label={t('month.focusGoal', { n: 3 })} />
               </fieldset>
               <FormError error={planBusy.error} />
               <div className="dialog-actions">
                 <button type="button" className="btn ghost" id="plan-cancel" hidden={!editing}
-                  onClick={() => renderPlan(planRef.current, { animate: true })}>Отмена</button>
-                <button type="submit" className="btn" disabled={planBusy.busy}>Сохранить</button>
+                  onClick={() => renderPlan(planRef.current, { animate: true })}>{t('common.cancel')}</button>
+                <button type="submit" className="btn" disabled={planBusy.busy}>{t('common.save')}</button>
               </div>
             </form>
           </section>
 
           <section className="panel" aria-labelledby="month-flower-title">
-            <h2 id="month-flower-title">Цветок месяца</h2>
+            <h2 id="month-flower-title">{t('month.flowerTitle')}</h2>
             <div id="flower">{flower && <Flower key={flower.round} {...flower} />}</div>
           </section>
         </div>
@@ -292,14 +293,14 @@ export default function Month() {
           <div className="panel-head">
             <h2 id="day-title">
               {selected && day.state !== 'idle'
-                ? `Задачи на ${formatDate(selected, { weekday: 'long', day: 'numeric', month: 'long' })}`
-                : 'Задачи дня'}
+                ? t('month.dayTasks', { date: formatDate(selected, { weekday: 'long', day: 'numeric', month: 'long' }) })
+                : t('month.dayTasksEmpty')}
             </h2>
           </div>
           <form id="day-add" noValidate onSubmit={quickAdd.onSubmit}>
             <div className="capsule">
-              <label htmlFor="day-add-title" className="visually-hidden">Новая задача на выбранный день</label>
-              <input type="text" id="day-add-title" name="title" maxLength="200" placeholder="Добавить задачу на этот день" autoComplete="off" />
+              <label htmlFor="day-add-title" className="visually-hidden">{t('month.newDayTask')}</label>
+              <input type="text" id="day-add-title" name="title" maxLength="200" placeholder={t('month.dayPlaceholder')} autoComplete="off" />
               <button type="submit" className="btn" disabled={quickAdd.busy}>+</button>
             </div>
             <FormError error={quickAdd.error} />

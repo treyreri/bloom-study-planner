@@ -1,24 +1,27 @@
 /*
   Layout of every page after login (the old templates/app.html):
   sidebar on desktop, bottom bar with 5 icons + "Ещё" sheet on phones.
+  A slim top bar holds the RU | EN switch.
 */
 import { useEffect, useState } from 'react';
 import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { logout } from '../api/client.js';
 import { useAuth } from '../auth.jsx';
 import heartMid from '../img/hearts/heart-mid.svg';
+import LangSwitch from './LangSwitch.jsx';
 
-// (path, label, icon, shown in the mobile bottom bar?)
+// (path, label key, icon, shown in the mobile bottom bar?)
 export const NAV_ITEMS = [
-  ['/today/', 'Сегодня', '🏠', true],
-  ['/month/', 'Мой месяц', '🗓️', true],
-  ['/tasks/', 'Задачи', '💗', true],
-  ['/study/', 'Учёба', '📚', false],
-  ['/habits/', 'Привычки', '✨', false],
-  ['/focus/', 'Помодоро', '⏳', true],
-  ['/diary/', 'Дневник', '💌', false],
-  ['/garden/', 'Мой сад', '🌸', false],
-  ['/profile/', 'Профиль', '🎀', false],
+  ['/today/', 'nav.today', '🏠', true],
+  ['/month/', 'nav.month', '🗓️', true],
+  ['/tasks/', 'nav.tasks', '💗', true],
+  ['/study/', 'nav.study', '📚', false],
+  ['/habits/', 'nav.habits', '✨', false],
+  ['/focus/', 'nav.focus', '⏳', true],
+  ['/diary/', 'nav.diary', '💌', false],
+  ['/garden/', 'nav.garden', '🌸', false],
+  ['/profile/', 'nav.profile', '🎀', false],
 ];
 
 const linkClass = (base) => () => base;   // no extra "active" class, aria-current marks the page
@@ -32,6 +35,7 @@ function NavItem({ path, label, icon, className }) {
 }
 
 export default function AppLayout({ children }) {
+  const { t } = useTranslation();
   const { profile } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -64,13 +68,13 @@ export default function AppLayout({ children }) {
   return (
     <>
       <div className="app">
-        <aside className="sidebar" aria-label="Главное меню">
+        <aside className="sidebar" aria-label={t('nav.mainMenu')}>
           <Link className="brand" to="/today/">
             <img src={heartMid} alt="" /> Bloom
           </Link>
           <nav>
             {NAV_ITEMS.map(([path, label, icon]) => (
-              <NavItem key={path} path={path} label={label} icon={icon} className="nav-link" />
+              <NavItem key={path} path={path} label={t(label)} icon={icon} className="nav-link" />
             ))}
           </nav>
 
@@ -82,38 +86,41 @@ export default function AppLayout({ children }) {
             <div className="who">
               <strong>{profile.first_name || profile.username}</strong>{' '}
               <form method="post" onSubmit={onLogout}>
-                <button type="submit" className="icon-btn small">Выйти ↩</button>
+                <button type="submit" className="icon-btn small">{t('nav.logoutArrow')}</button>
               </form>
             </div>
           </div>
         </aside>
 
         <main className="main" id="main">
+          <div className="app-top">
+            <LangSwitch />
+          </div>
           {children}
         </main>
       </div>
 
       {/* Mobile navigation: 4 main pages + "Ещё" (TZ 6.3: menu at the bottom, 5 icons) */}
-      <nav className="bottom-nav" aria-label="Меню">
+      <nav className="bottom-nav" aria-label={t('nav.menu')}>
         {NAV_ITEMS.filter((item) => item[3]).map(([path, label, icon]) => (
           <NavLink key={path} to={path} className={linkClass(undefined)}>
-            <span className="icon" aria-hidden="true">{icon}</span>{label}
+            <span className="icon" aria-hidden="true">{icon}</span>{t(label)}
           </NavLink>
         ))}
         <button
           type="button" data-more-toggle aria-expanded={String(moreOpen)} aria-controls="more-sheet"
           onClick={() => setMoreOpen((open) => !open)}
         >
-          <span className="icon" aria-hidden="true">🌸</span>Ещё
+          <span className="icon" aria-hidden="true">🌸</span>{t('nav.more')}
         </button>
       </nav>
       <div className="more-sheet" id="more-sheet" hidden={!moreOpen}>
         {NAV_ITEMS.filter((item) => !item[3]).map(([path, label, icon]) => (
-          <NavItem key={path} path={path} label={label} icon={icon} className="nav-link" />
+          <NavItem key={path} path={path} label={t(label)} icon={icon} className="nav-link" />
         ))}
         <form method="post" onSubmit={onLogout}>
           <button type="submit" className="nav-link icon-btn" style={{ width: '100%' }}>
-            <span className="icon" aria-hidden="true">↩</span>Выйти
+            <span className="icon" aria-hidden="true">↩</span>{t('nav.logout')}
           </button>
         </form>
       </div>

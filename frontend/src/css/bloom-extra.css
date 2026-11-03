@@ -1,0 +1,29 @@
+/* ==========================================================================
+   Bloom — additions on top of bloom.css (which stays unchanged):
+   the RU | EN switch. Same tokens, radii, shadows.
+   ========================================================================== */
+
+/* Slim bar above every page after login: language switch */
+.app-top {
+  display: flex; justify-content: flex-end; align-items: center;
+  gap: 10px; margin-bottom: 8px;
+}
+
+/* ---------- RU | EN capsule ------------------------------------------ */
+
+.lang-switch {
+  display: inline-flex; align-items: center; gap: 2px;
+  background: var(--surface); border: 2px solid var(--border);
+  border-radius: 999px; padding: 2px;
+}
+.lang-switch button {
+  border: 0; background: transparent; cursor: pointer;
+  border-radius: 999px; padding: 1px 10px; min-height: 28px;
+  font-family: var(--font-num); font-size: .85rem; font-weight: 600;
+  color: var(--muted); letter-spacing: .04em;
+  transition: background .15s ease, color .15s ease;
+}
+.lang-switch button:hover { color: var(--accent); }
+.lang-switch button[aria-pressed="true"] { background: var(--accent); color: #fff; }
+.lang-switch .sep { color: var(--border); font-size: .9rem; user-select: none; }
+.public-top nav { align-items: center; }

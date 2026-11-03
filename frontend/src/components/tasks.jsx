@@ -3,8 +3,9 @@
    Ported 1:1 from the former vanilla-JS tasks code (same markup).
    ========================================================================== */
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { api, getAll } from '../api/client.js';
-import { PRIORITY, formValues, formatDate, iso, toast, today } from '../lib/bloom.js';
+import { PRIORITY_EMOJI, formValues, formatDate, iso, priorityText, toast, today } from '../lib/bloom.js';
 import { FormError, HeartButton, SubjectOptions, useBusy } from './ui.jsx';
 
 /**
@@ -17,13 +18,14 @@ import { FormError, HeartButton, SubjectOptions, useBusy } from './ui.jsx';
  * after every change, the Tasks page only after reloading).
  */
 export function TaskItem({ task, isDone, onChange = () => {}, onEdit, showDate = true }) {
+  const { t } = useTranslation();
   const [done, setDone] = useState(task.is_done);
   const [removed, setRemoved] = useState(false);
   const [moving, setMoving] = useState(false);
   const [deleting, setDeleting] = useState(false);
   if (removed) return null;
 
-  const priority = PRIORITY[task.priority];
+  const priorityLabel = t(`priority.${task.priority}`);
   const edit = () => onEdit(task, onChange);
 
   async function move() {
@@ -31,7 +33,7 @@ export function TaskItem({ task, isDone, onChange = () => {}, onEdit, showDate =
     try {
       const moved = await api(`tasks/${task.id}/move-tomorrow/`, { method: 'POST' });
       Object.assign(task, moved);
-      toast(`Перенесено на ${formatDate(task.date)} 🌙`);
+      toast(t('tasks.moved', { date: formatDate(task.date) }));
       onChange('moved', task);
     } catch (error) {
       toast(error.message, 'error');
@@ -55,7 +57,7 @@ export function TaskItem({ task, isDone, onChange = () => {}, onEdit, showDate =
     <li className={'task' + (done ? ' done' : '')} data-id={task.id}>
       <HeartButton
         checked={task.is_done}
-        label={`Выполнено: ${task.title}`}
+        label={t('tasks.done', { title: task.title })}
         onToggle={async () => {
           const updated = await api(`tasks/${task.id}/toggle/`, { method: 'POST' });
           Object.assign(task, updated);
@@ -64,7 +66,7 @@ export function TaskItem({ task, isDone, onChange = () => {}, onEdit, showDate =
         }}
       />
       <div
-        className="task-body" tabIndex="0" role="button" aria-label={`Редактировать: ${task.title}`}
+        className="task-body" tabIndex="0" role="button" aria-label={t('tasks.edit', { title: task.title })}
         onClick={edit} onKeyDown={(event) => { if (event.key === 'Enter') edit(); }}
       >
         <div className="task-title">{task.title}</div>
@@ -73,20 +75,20 @@ export function TaskItem({ task, isDone, onChange = () => {}, onEdit, showDate =
           {task.subject_name && (
             <span className="badge dot" style={{ '--dot': task.subject_color }}>{task.subject_name}</span>
           )}
-          <span className={'badge' + (task.priority === 'high' ? ' high' : '')} title={`Приоритет: ${priority.label}`}>
-            {priority.emoji} {priority.label}
+          <span className={'badge' + (task.priority === 'high' ? ' high' : '')} title={t('priority.title', { label: priorityLabel })}>
+            {PRIORITY_EMOJI[task.priority]} {priorityLabel}
           </span>
         </div>
       </div>
       <div className="actions">
         {!isDone && (
           <button
-            type="button" className="icon-btn" title="Перенести на завтра"
-            aria-label={`Перенести на завтра: ${task.title}`} disabled={moving} onClick={move}
+            type="button" className="icon-btn" title={t('tasks.moveTomorrow')}
+            aria-label={t('tasks.moveTomorrowItem', { title: task.title })} disabled={moving} onClick={move}
           >→</button>
         )}
         <button
-          type="button" className="icon-btn delete" title="Удалить" aria-label={`Удалить: ${task.title}`}
+          type="button" className="icon-btn delete" title={t('common.delete')} aria-label={t('common.deleteItem', { name: task.title })}
           disabled={deleting} onClick={remove}
         >✕</button>
       </div>
@@ -100,6 +102,7 @@ export function TaskItem({ task, isDone, onChange = () => {}, onEdit, showDate =
  * Subjects are loaded once per page, like the old per-page cache.
  */
 export const TaskDialog = forwardRef(function TaskDialog(_props, ref) {
+  const { t } = useTranslation();
   const dialogRef = useRef(null);
   const formRef = useRef(null);
   const subjectsCache = useRef(null);
@@ -143,7 +146,7 @@ export const TaskDialog = forwardRef(function TaskDialog(_props, ref) {
       const updated = await api(`tasks/${task.id}/`, { method: 'PATCH', body: values });
       Object.assign(task, updated);
       dialogRef.current.close();
-      toast('Сохранено 💗');
+      toast(t('common.saved'));
       onChange('updated', task);
     });
   }
@@ -151,42 +154,44 @@ export const TaskDialog = forwardRef(function TaskDialog(_props, ref) {
   return (
     <dialog id="task-dialog" aria-labelledby="task-dialog-title" ref={dialogRef}>
       <form id="task-edit-form" noValidate ref={formRef} onSubmit={submit}>
-        <h2 id="task-dialog-title">Задача 💗</h2>
+        <h2 id="task-dialog-title">{t('tasks.dialogTitle')}</h2>
         <div className="field">
-          <label htmlFor="edit-title">Название</label>
+          <label htmlFor="edit-title">{t('common.title')}</label>
           <input type="text" id="edit-title" name="title" maxLength="200" required />
         </div>
         <div className="field">
-          <label htmlFor="edit-description">Описание</label>
+          <label htmlFor="edit-description">{t('tasks.description')}</label>
           <textarea id="edit-description" name="description" rows="3"></textarea>
         </div>
         <div className="field-row">
           <div className="field">
-            <label htmlFor="edit-date">Дата</label>
+            <label htmlFor="edit-date">{t('common.date')}</label>
             <input type="date" id="edit-date" name="date" required />
           </div>
           <div className="field">
-            <label htmlFor="edit-priority">Приоритет</label>
-            <select id="edit-priority" name="priority">
-              <option value="low">🌸 низкий</option>
-              <option value="mid">🌷 средний</option>
-              <option value="high">🌹 высокий</option>
-            </select>
+            <label htmlFor="edit-priority">{t('common.priority')}</label>
+            <select id="edit-priority" name="priority"><PriorityOptions /></select>
           </div>
         </div>
         <div className="field">
-          <label htmlFor="edit-subject">Предмет</label>
+          <label htmlFor="edit-subject">{t('common.subject')}</label>
           <select id="edit-subject" name="subject"><SubjectOptions subjects={subjects} /></select>
         </div>
         <FormError error={error} />
         <div className="dialog-actions">
-          <button type="button" className="btn ghost" data-close onClick={() => dialogRef.current.close()}>Отмена</button>
-          <button type="submit" className="btn" disabled={busy}>Сохранить</button>
+          <button type="button" className="btn ghost" data-close onClick={() => dialogRef.current.close()}>{t('common.cancel')}</button>
+          <button type="submit" className="btn" disabled={busy}>{t('common.save')}</button>
         </div>
       </form>
     </dialog>
   );
 });
+
+/** <option>s 🌸 низкий / 🌷 средний / 🌹 высокий */
+export function PriorityOptions() {
+  useTranslation();   // re-render on language change
+  return ['low', 'mid', 'high'].map((p) => <option key={p} value={p}>{priorityText(p)}</option>);
+}
 
 /**
  * Quick add: a form with a "title" input (and optional date/priority/subject).

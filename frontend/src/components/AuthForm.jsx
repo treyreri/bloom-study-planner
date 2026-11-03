@@ -5,13 +5,18 @@
 */
 import { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { submitAuthForm } from '../api/client.js';
+import { serverMessage } from '../i18n.js';
 import { pageTitle } from '../lib/bloom.js';
+import LangSwitch from './LangSwitch.jsx';
 import heartMid from '../img/hearts/heart-mid.svg';
 
+/** Django's messages are Russian: translated when shown in English */
 function ErrorList({ errors }) {
+  useTranslation();   // re-render on language change
   if (!errors || !errors.length) return null;
-  return <ul className="errorlist" role="alert">{errors.map((e) => <li key={e}>{e}</li>)}</ul>;
+  return <ul className="errorlist" role="alert">{errors.map((e) => <li key={e}>{serverMessage(e)}</li>)}</ul>;
 }
 
 /** Django's LoginView only follows a local "next" URL. */
@@ -21,10 +26,11 @@ function safeNext(next) {
 }
 
 /**
- * fields: [{name, label, type, attrs, help (string or array of list items)}]
+ * fields: [{name, label, type, attrs, help}]: label and help are locale keys (help may hold a list)
  * Passwords are cleared after a failed submit, other values stay (like a re-rendered Django form).
  */
 export default function AuthForm({ kind, title, heading, fields, submitLabel, footer }) {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [params] = useSearchParams();
   const formRef = useRef(null);
@@ -61,25 +67,27 @@ export default function AuthForm({ kind, title, heading, fields, submitLabel, fo
     <div className="public">
       <header className="public-top">
         <Link className="brand" to="/"><img src={heartMid} alt="" /> Bloom</Link>
+        <nav><LangSwitch /></nav>
       </header>
       <main className="auth-wrap">
         <form className="card auth-card" method="post" noValidate ref={formRef} onSubmit={submit}>
           <h1>{heading}</h1>
           <ErrorList errors={errors.__all__} />
           {fields.map((f) => {
+            const help = f.help && t(f.help, { returnObjects: true });
             const fieldErrors = errors[f.name];
             const describedBy = [f.help && `id_${f.name}_helptext`, fieldErrors && `id_${f.name}_error`]
               .filter(Boolean).join(' ') || undefined;
             return (
               <div className="field" key={f.name}>
-                <label htmlFor={`id_${f.name}`}>{f.label}</label>
+                <label htmlFor={`id_${f.name}`}>{t(f.label)}</label>
                 <input
                   type={f.type} name={f.name} id={`id_${f.name}`} {...f.attrs}
                   aria-invalid={fieldErrors ? 'true' : undefined} aria-describedby={describedBy}
                 />
-                {f.help && (
+                {help && (
                   <span className="helptext">
-                    {Array.isArray(f.help) ? <ul>{f.help.map((h) => <li key={h}>{h}</li>)}</ul> : f.help}
+                    {Array.isArray(help) ? <ul>{help.map((h) => <li key={h}>{h}</li>)}</ul> : help}
                   </span>
                 )}
                 <ErrorList errors={fieldErrors} />

@@ -1,14 +1,12 @@
 /* Habit tracker (/habits/): month grid of heart checkboxes + streaks */
 import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { api } from '../api/client.js';
-import { MONTHS, formValues, formatDate, iso, pageTitle, plural, toast, today } from '../lib/bloom.js';
+import { formValues, formatDate, iso, monthName, pageTitle, toast, today } from '../lib/bloom.js';
 import { ConfirmButton, Empty, Failed, FormError, HeartButton, Loading, useBusy } from '../components/ui.jsx';
 
-function streakText(n) {
-  return n ? `🔥 ${n} ${plural(n, ['день', 'дня', 'дней'])} подряд!` : '';
-}
-
 function HabitRow({ habit, days, todayIso, reload }) {
+  const { t } = useTranslation();
   const [streak, setStreak] = useState(habit.streak);
   const checked = new Set(habit.checked_dates);
 
@@ -23,7 +21,7 @@ function HabitRow({ habit, days, todayIso, reload }) {
     <tr className={habit.is_active ? '' : 'inactive'}>
       <th className="name" scope="row">
         <div>{habit.emoji} {habit.title}</div>
-        <div className="streak small">{streakText(streak)}</div>
+        <div className="streak small">{streak ? t('habits.streak', { count: streak }) : ''}</div>
       </th>
       {days.map((d) => (
         <td key={d}>
@@ -41,30 +39,31 @@ function HabitRow({ habit, days, todayIso, reload }) {
       <td style={{ whiteSpace: 'nowrap' }}>
         <button
           type="button" className="icon-btn small"
-          title={habit.is_active ? 'В архив' : 'Вернуть из архива'}
-          aria-label={`${habit.is_active ? 'В архив' : 'Вернуть'}: ${habit.title}`}
+          title={t(habit.is_active ? 'habits.archive' : 'habits.unarchive')}
+          aria-label={`${t(habit.is_active ? 'habits.archive' : 'habits.unarchiveShort')}: ${habit.title}`}
           onClick={toggleActive}
         >{habit.is_active ? '🗄' : '↺'}</button>
-        <ConfirmButton className="icon-btn delete" title="Удалить" aria-label={`Удалить: ${habit.title}`}
-          action={async () => { await api(`habits/${habit.id}/`, { method: 'DELETE' }); toast('Привычка удалена'); reload(); }}>✕</ConfirmButton>
+        <ConfirmButton className="icon-btn delete" title={t('common.delete')} aria-label={t('common.deleteItem', { name: habit.title })}
+          action={async () => { await api(`habits/${habit.id}/`, { method: 'DELETE' }); toast(t('habits.deleted')); reload(); }}>✕</ConfirmButton>
       </td>
     </tr>
   );
 }
 
 export default function Habits() {
+  const { t } = useTranslation();
   const start = today();
   const ym = useRef({ year: start.getFullYear(), month: start.getMonth() + 1 });
-  const [label, setLabel] = useState('');
+  const [label, setLabel] = useState(null);   // {year, month} shown in the header
   const [grid, setGrid] = useState({ state: 'loading', round: 0 });
   const boxRef = useRef(null);
   const { busy, error, run } = useBusy();
 
-  useEffect(() => { document.title = pageTitle('Привычки'); }, []);
+  useEffect(() => { document.title = pageTitle(t('habits.title')); }, [t]);
 
   async function load() {
     const { year, month } = ym.current;
-    setLabel(`${MONTHS[month - 1]} ${year}`);
+    setLabel({ year, month });
     setGrid((old) => ({ ...old, state: 'loading' }));
     try {
       const data = await api(`habits/grid/?year=${year}&month=${month}`);
@@ -91,7 +90,7 @@ export default function Habits() {
     run(async () => {
       await api('habits/', { method: 'POST', body: values });
       form.elements.title.value = '';
-      toast('Привычка добавлена ✨');
+      toast(t('habits.added'));
       load();
     });
   }
@@ -109,7 +108,7 @@ export default function Habits() {
   if (grid.state === 'loading') content = <Loading />;
   else if (grid.state === 'error') content = <Failed error={grid.error} />;
   else if (!grid.data.habits.length) {
-    content = <Empty icon="✨">Создай первую привычку: вода, спорт, чтение, слова на иностранном…</Empty>;
+    content = <Empty icon="✨">{t('habits.empty')}</Empty>;
   } else {
     const { data } = grid;
     const todayIso = iso(today());
@@ -118,7 +117,7 @@ export default function Habits() {
       <table className="habit-grid">
         <thead>
           <tr>
-            <th className="name" scope="col">Привычка</th>
+            <th className="name" scope="col">{t('habits.habit')}</th>
             {days.map((d, i) => <th key={d} scope="col" className={d === todayIso ? 'today-col' : ''}>{i + 1}</th>)}
             <th scope="col"></th>
           </tr>
@@ -136,34 +135,34 @@ export default function Habits() {
     <>
       <div className="page-head">
         <h1>Habits ✨</h1>
-        <div className="chips" role="group" aria-label="Выбор месяца">
-          <button type="button" className="chip" id="prev-month" aria-label="Предыдущий месяц" onClick={() => shift(-1)}>←</button>
-          <strong id="month-label" aria-live="polite" style={{ minWidth: '9em', textAlign: 'center', alignSelf: 'center' }}>{label}</strong>
-          <button type="button" className="chip" id="next-month" aria-label="Следующий месяц" onClick={() => shift(1)}>→</button>
+        <div className="chips" role="group" aria-label={t('common.monthPick')}>
+          <button type="button" className="chip" id="prev-month" aria-label={t('common.prevMonth')} onClick={() => shift(-1)}>←</button>
+          <strong id="month-label" aria-live="polite" style={{ minWidth: '9em', textAlign: 'center', alignSelf: 'center' }}>{label ? `${monthName(label.month)} ${label.year}` : ''}</strong>
+          <button type="button" className="chip" id="next-month" aria-label={t('common.nextMonth')} onClick={() => shift(1)}>→</button>
         </div>
       </div>
 
       <section className="card" aria-labelledby="new-habit-title">
-        <h2 id="new-habit-title" className="visually-hidden">Новая привычка</h2>
+        <h2 id="new-habit-title" className="visually-hidden">{t('habits.newHabit')}</h2>
         <form id="habit-form" noValidate onSubmit={addHabit}>
           <div className="capsule">
-            <label htmlFor="habit-emoji" className="visually-hidden">Эмодзи</label>
+            <label htmlFor="habit-emoji" className="visually-hidden">{t('habits.emoji')}</label>
             <select id="habit-emoji" name="emoji" style={{ flex: '0 0 auto', width: 'auto', border: 0, background: 'transparent', borderRadius: '999px' }}>
               <option>🌷</option><option>💧</option><option>🏃‍♀️</option><option>📖</option>
               <option>🇫🇷</option><option>🧘‍♀️</option><option>🍎</option><option>😴</option><option>✍️</option>
             </select>
-            <label htmlFor="habit-title" className="visually-hidden">Название привычки</label>
-            <input type="text" id="habit-title" name="title" maxLength="150" placeholder="Выпить 8 стаканов воды" autoComplete="off" />
-            <button type="submit" className="btn" disabled={busy}>Добавить</button>
+            <label htmlFor="habit-title" className="visually-hidden">{t('habits.habitTitle')}</label>
+            <input type="text" id="habit-title" name="title" maxLength="150" placeholder={t('habits.placeholder')} autoComplete="off" />
+            <button type="submit" className="btn" disabled={busy}>{t('habits.add')}</button>
           </div>
           <FormError error={error} />
         </form>
       </section>
 
       <section className="panel" aria-labelledby="grid-title" style={{ marginTop: '16px' }}>
-        <h2 id="grid-title" className="visually-hidden">Сетка привычек</h2>
+        <h2 id="grid-title" className="visually-hidden">{t('habits.grid')}</h2>
         <div className="scroll-x" id="habit-grid" ref={boxRef}>{content}</div>
-        <p className="small muted" style={{ margin: '10px 0 0' }}>Нажми на сердечко, чтобы отметить день. Будущие дни отметить нельзя.</p>
+        <p className="small muted" style={{ margin: '10px 0 0' }}>{t('habits.hint')}</p>
       </section>
     </>
   );

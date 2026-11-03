@@ -1,10 +1,12 @@
 /* Small building blocks with the same markup as the old Bloom.* helpers. */
 import { useEffect, useRef, useState } from 'react';
-import { STAGES, toast } from '../lib/bloom.js';
+import { useTranslation } from 'react-i18next';
+import { STAGE_EMOJI, stageLabel, toast } from '../lib/bloom.js';
 
 /** <p class="loading">Загружаем</p> */
-export function Loading({ text = 'Загружаем' }) {
-  return <p className="loading">{text}</p>;
+export function Loading({ text }) {
+  const { t } = useTranslation();
+  return <p className="loading">{text || t('common.loading')}</p>;
 }
 
 /** Empty state: big icon + text */
@@ -18,7 +20,8 @@ export function Empty({ icon, children }) {
 
 /** "Не удалось загрузить: …" */
 export function Failed({ error }) {
-  return <p className="form-error" role="alert">{'Не удалось загрузить: ' + error.message}</p>;
+  const { t } = useTranslation();
+  return <p className="form-error" role="alert">{t('common.failed', { message: error.message })}</p>;
 }
 
 /** Inline form error paragraph (hidden by CSS when empty). */
@@ -99,7 +102,8 @@ export function HeartButton({ checked, label, onToggle, disabled = false }) {
 }
 
 /** Two-step delete: the first click asks "Точно?", the second one confirms. */
-export function ConfirmButton({ action, children, question = 'Точно?', ...props }) {
+export function ConfirmButton({ action, children, question, ...props }) {
+  const { t } = useTranslation();
   const [armed, setArmed] = useState(false);
   const [busy, setBusy] = useState(false);
   const timer = useRef(null);
@@ -117,32 +121,33 @@ export function ConfirmButton({ action, children, question = 'Точно?', ...p
 
   return (
     <button type="button" {...props} disabled={busy} data-armed={String(armed)} onClick={click}>
-      {armed ? question : children}
+      {armed ? (question || t('common.confirm')) : children}
     </button>
   );
 }
 
 /** Flower in a pot + vine progress bar. Animates when the stage changes. */
 export function Flower({ progress, previousStage }) {
-  const stage = STAGES[progress.stage];
+  const { t } = useTranslation();
+  const label = stageLabel(progress.stage);
   const grow = previousStage && previousStage !== progress.stage;
   return (
     <>
       <div className="flower">
-        <div className={'pot' + (grow ? ' grow' : '')} role="img" aria-label={`Цветок: ${stage.label}`}>
-          {stage.emoji}
+        <div className={'pot' + (grow ? ' grow' : '')} role="img" aria-label={t('flower.label', { stage: label })}>
+          {STAGE_EMOJI[progress.stage]}
         </div>
-        <strong>{`${stage.label[0].toUpperCase()}${stage.label.slice(1)}`}</strong>
-        <span className="muted small">{`${progress.done} из ${progress.total} задач`}</span>
+        <strong>{`${label[0].toUpperCase()}${label.slice(1)}`}</strong>
+        <span className="muted small">{t('flower.tasks', { done: progress.done, total: progress.total })}</span>
       </div>
       <div
         className="vine" role="progressbar" aria-valuemin="0" aria-valuemax="100"
-        aria-valuenow={String(progress.percent)} aria-label="Прогресс месяца"
+        aria-valuenow={String(progress.percent)} aria-label={t('flower.progress')}
       >
         <div className="vine-fill" style={{ width: `${progress.percent}%` }} />
       </div>
       <div className="small muted" style={{ textAlign: 'center' }}>
-        <span className="num">{`${progress.percent}%`}</span> выполнено
+        <span className="num">{`${progress.percent}%`}</span>{` ${t('flower.done')}`}
       </div>
     </>
   );
@@ -188,10 +193,11 @@ export function useBusy() {
 }
 
 /** <option>s with the user's subjects (the old fillSubjectSelect). */
-export function SubjectOptions({ subjects, emptyLabel = 'Без предмета' }) {
+export function SubjectOptions({ subjects, emptyLabel }) {
+  const { t } = useTranslation();
   return (
     <>
-      <option value="">{emptyLabel}</option>
+      <option value="">{emptyLabel || t('common.noSubject')}</option>
       {subjects.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
     </>
   );

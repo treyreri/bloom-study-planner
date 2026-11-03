@@ -1,8 +1,10 @@
 /* ==========================================================================
    Bloom — shared helpers (ported 1:1 from the former vanilla-JS helpers):
-   toasts, confetti, dates in the server's "today", Russian plurals,
+   toasts, confetti, dates in the server's "today", plurals,
    and the shared vocabulary (priorities, kinds, flower stages).
+   Texts come from src/locales (see src/i18n.js).
    ========================================================================== */
+import i18n, { locale } from '../i18n.js';
 
 // ---------- "today" comes from the server (TIME_ZONE), like data-today before ----
 
@@ -19,46 +21,29 @@ export function monday(date) { return addDays(date, -((date.getDay() + 6) % 7));
 
 export function formatDate(value, options = { day: 'numeric', month: 'long' }) {
   const date = typeof value === 'string' ? parseDate(value) : value;
-  return date.toLocaleDateString('ru-RU', options);
+  return date.toLocaleDateString(locale(), options);
 }
 
-/** plural(5, ['день', 'дня', 'дней']) -> 'дней' */
-export function plural(n, forms) {
-  const a = Math.abs(n) % 100, b = a % 10;
-  if (a > 10 && a < 20) return forms[2];
-  if (b > 1 && b < 5) return forms[1];
-  if (b === 1) return forms[0];
-  return forms[2];
-}
-export const daysWord = (n) => plural(n, ['день', 'дня', 'дней']);
+/** daysWord(5) -> 'дней' / 'days' (plural rules of the current language) */
+export const daysWord = (n) => i18n.t('common.days', { count: n });
 
 export function minutesText(minutes) {
   const h = Math.floor(minutes / 60), m = minutes % 60;
-  if (!h) return `${m} мин`;
-  return m ? `${h} ч ${m} мин` : `${h} ч`;
+  if (!h) return i18n.t('common.minutes', { m });
+  return m ? i18n.t('common.hoursMinutes', { h, m }) : i18n.t('common.hours', { h });
 }
 
 // ---------- shared vocabulary --------------------------------------------
 
-export const MONTHS = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь',
-  'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
-export const PRIORITY = {
-  low: { emoji: '🌸', label: 'низкий' },
-  mid: { emoji: '🌷', label: 'средний' },
-  high: { emoji: '🌹', label: 'высокий' },
-};
-export const KINDS = {
-  exam: 'экзамен', test: 'зачёт', coursework: 'курсовая', homework: 'ДЗ',
-};
-export const KINDS_GENITIVE = {
-  exam: 'экзамена', test: 'зачёта', coursework: 'курсовой', homework: 'ДЗ',
-};
-export const STAGES = {
-  seedling: { emoji: '🌱', label: 'росток' },
-  stem: { emoji: '🌿', label: 'стебель' },
-  bud: { emoji: '🌷', label: 'бутон' },
-  bouquet: { emoji: '💐', label: 'букет' },
-};
+/** monthName(11) -> 'Ноябрь' / 'November' */
+export const monthName = (month) => i18n.t('months', { returnObjects: true })[month - 1];
+
+export const PRIORITY_EMOJI = { low: '🌸', mid: '🌷', high: '🌹' };
+/** '🌷 средний' */
+export const priorityText = (priority) => `${PRIORITY_EMOJI[priority]} ${i18n.t(`priority.${priority}`)}`;
+
+export const STAGE_EMOJI = { seedling: '🌱', stem: '🌿', bud: '🌷', bouquet: '💐' };
+export const stageLabel = (stage) => i18n.t(`stages.${stage}`);
 
 // ---------- feedback (plain DOM, outside React, exactly as before) --------
 
@@ -97,7 +82,7 @@ export function confetti() {
 export function celebrateIfAllDone(tasks) {
   if (tasks.length && tasks.every((task) => task.is_done)) {
     confetti();
-    toast('Все задачи на сегодня сделаны! 🌷');
+    toast(i18n.t('common.allDone'));
   }
 }
 
@@ -113,5 +98,5 @@ export function formValues(form) {
 
 /** document.title in the same format as the old base.html */
 export function pageTitle(title) {
-  return `${title} · Bloom 🌷`;
+  return i18n.t('common.pageTitle', { title });
 }

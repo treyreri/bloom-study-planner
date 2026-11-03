@@ -1,7 +1,9 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
+import './i18n.js';
 import './css/bloom.css';
+import './css/bloom-extra.css';
 import { AuthProvider, PublicOnly, RequireAuth } from './auth.jsx';
 import AppLayout from './components/AppLayout.jsx';
 import Home from './pages/Home.jsx';

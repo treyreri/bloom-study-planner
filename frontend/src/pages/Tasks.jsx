@@ -1,15 +1,17 @@
 /* To-do List page (/tasks/) */
 import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { api, getAll } from '../api/client.js';
 import {
-  addDays, celebrateIfAllDone, formValues, iso, monday, pageTitle, plural, toast, today,
+  addDays, celebrateIfAllDone, formValues, iso, monday, pageTitle, toast, today,
 } from '../lib/bloom.js';
 import { Empty, Failed, FormError, Loading, SubjectOptions } from '../components/ui.jsx';
-import { TaskDialog, TaskItem, useQuickAdd } from '../components/tasks.jsx';
+import { PriorityOptions, TaskDialog, TaskItem, useQuickAdd } from '../components/tasks.jsx';
 
-const VIEWS = [['today', 'Сегодня'], ['week', 'Неделя'], ['overdue', 'Просроченные'], ['all', 'Все']];
+const VIEWS = [['today', 'tasks.viewToday'], ['week', 'tasks.viewWeek'], ['overdue', 'tasks.viewOverdue'], ['all', 'tasks.viewAll']];
 
 export default function Tasks() {
+  const { t } = useTranslation();
   const [view, setView] = useState('today');
   const [subjects, setSubjects] = useState(null);   // null = not loaded yet (empty <select>)
   // list.state: 'loading' | 'ready' | 'error'
@@ -22,7 +24,7 @@ export default function Tasks() {
   const dialog = useRef(null);
   const searchTimer = useRef(null);
 
-  useEffect(() => { document.title = pageTitle('Задачи'); }, []);
+  useEffect(() => { document.title = pageTitle(t('tasks.pageTitle')); }, [t]);
 
   function query() {
     const params = new URLSearchParams();
@@ -79,7 +81,7 @@ export default function Tasks() {
     searchTimer.current = setTimeout(() => load(), 300);
   }
 
-  const quickAdd = useQuickAdd({ onCreated: () => { toast('Задача добавлена 🌷'); load(); } });
+  const quickAdd = useQuickAdd({ onCreated: () => { toast(t('tasks.added')); load(); } });
 
   useEffect(() => {
     addRef.current.elements.date.value = iso(today());
@@ -98,8 +100,8 @@ export default function Tasks() {
   else if (list.state === 'error') content = <Failed error={list.error} />;
   else if (!list.count) {
     content = view === 'overdue'
-      ? <Empty icon="🎉">Просроченных задач нет!</Empty>
-      : <Empty icon="🌱">Здесь пока пусто. Добавь первую задачу!</Empty>;
+      ? <Empty icon="🎉">{t('tasks.noOverdue')}</Empty>
+      : <Empty icon="🌱">{t('tasks.empty')}</Empty>;
   } else {
     content = list.tasks.map((task) => (
       <TaskItem key={`${list.round}-${task.id}`} task={task} isDone={task.is_done} onChange={onChange}
@@ -113,74 +115,68 @@ export default function Tasks() {
         <div className="page-head">
           <h1>To-do List 🌷</h1>
           <p className="muted" id="tasks-summary" aria-live="polite">
-            {list.count === null ? '' : `${list.count} ${plural(list.count, ['задача', 'задачи', 'задач'])}`}
+            {list.count === null ? '' : t('tasks.count', { count: list.count })}
           </p>
         </div>
 
         <div className="grid" style={{ gridTemplateColumns: 'minmax(0,1fr)' }}>
           <section className="card" aria-labelledby="add-title">
-            <h2 id="add-title" className="visually-hidden">Новая задача</h2>
+            <h2 id="add-title" className="visually-hidden">{t('tasks.newTask')}</h2>
             <form id="task-add" noValidate ref={addRef} onSubmit={quickAdd.onSubmit}>
               <div className="capsule">
-                <label htmlFor="add-title-input" className="visually-hidden">Название задачи</label>
-                <input type="text" id="add-title-input" name="title" maxLength="200" placeholder="Что нужно сделать?" autoComplete="off" />
-                <button type="submit" className="btn" disabled={quickAdd.busy}>Добавить</button>
+                <label htmlFor="add-title-input" className="visually-hidden">{t('tasks.taskTitle')}</label>
+                <input type="text" id="add-title-input" name="title" maxLength="200" placeholder={t('tasks.placeholder')} autoComplete="off" />
+                <button type="submit" className="btn" disabled={quickAdd.busy}>{t('tasks.add')}</button>
               </div>
               <div className="field-row" style={{ marginTop: '10px' }}>
                 <div className="field">
-                  <label htmlFor="add-date">Дата</label>
+                  <label htmlFor="add-date">{t('common.date')}</label>
                   <input type="date" id="add-date" name="date" />
                 </div>
                 <div className="field">
-                  <label htmlFor="add-priority">Приоритет</label>
-                  <select id="add-priority" name="priority" defaultValue="mid">
-                    <option value="low">🌸 низкий</option>
-                    <option value="mid">🌷 средний</option>
-                    <option value="high">🌹 высокий</option>
-                  </select>
+                  <label htmlFor="add-priority">{t('common.priority')}</label>
+                  <select id="add-priority" name="priority" defaultValue="mid"><PriorityOptions /></select>
                 </div>
                 <div className="field">
-                  <label htmlFor="add-subject">Предмет</label>
+                  <label htmlFor="add-subject">{t('common.subject')}</label>
                   <select id="add-subject" name="subject">{subjects && <SubjectOptions subjects={subjects} />}</select>
                 </div>
               </div>
               <FormError error={quickAdd.error} />
             </form>
 
-            <div className="chips" role="group" aria-label="Какие задачи показать" style={{ margin: '6px 0 10px' }}>
+            <div className="chips" role="group" aria-label={t('tasks.whichTasks')} style={{ margin: '6px 0 10px' }}>
               {VIEWS.map(([value, label]) => (
                 <button key={value} type="button" className="chip" data-view={value}
-                  aria-pressed={String(view === value)} onClick={() => chooseView(value)}>{label}</button>
+                  aria-pressed={String(view === value)} onClick={() => chooseView(value)}>{t(label)}</button>
               ))}
             </div>
 
             <form id="task-filters" className="field-row" role="search" ref={filtersRef}
               onInput={onFiltersInput} onSubmit={(event) => { event.preventDefault(); load(); }}>
               <div className="field">
-                <label htmlFor="filter-search">Поиск</label>
-                <input type="search" id="filter-search" name="search" placeholder="по названию" />
+                <label htmlFor="filter-search">{t('tasks.search')}</label>
+                <input type="search" id="filter-search" name="search" placeholder={t('tasks.searchPlaceholder')} />
               </div>
               <div className="field">
-                <label htmlFor="filter-subject">Предмет</label>
+                <label htmlFor="filter-subject">{t('common.subject')}</label>
                 <select id="filter-subject" name="subject">
-                  {subjects && <SubjectOptions subjects={subjects} emptyLabel="Все предметы" />}
+                  {subjects && <SubjectOptions subjects={subjects} emptyLabel={t('tasks.allSubjects')} />}
                 </select>
               </div>
               <div className="field">
-                <label htmlFor="filter-priority">Приоритет</label>
+                <label htmlFor="filter-priority">{t('common.priority')}</label>
                 <select id="filter-priority" name="priority">
-                  <option value="">Любой</option>
-                  <option value="low">🌸 низкий</option>
-                  <option value="mid">🌷 средний</option>
-                  <option value="high">🌹 высокий</option>
+                  <option value="">{t('tasks.anyPriority')}</option>
+                  <PriorityOptions />
                 </select>
               </div>
               <div className="field">
-                <label htmlFor="filter-ordering">Сортировка</label>
+                <label htmlFor="filter-ordering">{t('tasks.ordering')}</label>
                 <select id="filter-ordering" name="ordering">
-                  <option value="">По дате</option>
-                  <option value="-priority">Сначала важные</option>
-                  <option value="-date">Сначала поздние</option>
+                  <option value="">{t('tasks.byDate')}</option>
+                  <option value="-priority">{t('tasks.importantFirst')}</option>
+                  <option value="-date">{t('tasks.latestFirst')}</option>
                 </select>
               </div>
             </form>
@@ -188,7 +184,7 @@ export default function Tasks() {
             <ul className="task-list" id="task-list" aria-live="polite">{content}</ul>
             <div style={{ textAlign: 'center', marginTop: '10px' }}>
               <button type="button" className="btn secondary" id="load-more" hidden={!list.next}
-                onClick={() => load(true)}>Показать ещё</button>
+                onClick={() => load(true)}>{t('tasks.more')}</button>
             </div>
           </section>
         </div>

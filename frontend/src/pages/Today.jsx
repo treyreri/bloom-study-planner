@@ -1,31 +1,31 @@
 /* Today dashboard (/today/): everything comes from GET /api/v1/dashboard/ */
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { api } from '../api/client.js';
-import {
-  KINDS, KINDS_GENITIVE, celebrateIfAllDone, daysWord, formatDate, iso, pageTitle, today,
-} from '../lib/bloom.js';
+import { celebrateIfAllDone, formatDate, iso, pageTitle, today } from '../lib/bloom.js';
 import { Empty, Failed, Flower, FormError, HeartButton, Loading, useFlower } from '../components/ui.jsx';
 import { TaskDialog, TaskItem, useQuickAdd } from '../components/tasks.jsx';
 
-function greetingFor(data) {
+function greetingFor(data, t) {
   const hour = new Date().getHours();
-  const hello = hour < 12 ? 'Доброе утро' : hour < 18 ? 'Привет' : 'Добрый вечер';
-  return `${hello}, ${data.name}! 🌷`;
+  const hello = t(hour < 12 ? 'today.morning' : hour < 18 ? 'today.afternoon' : 'today.evening');
+  return t('today.greeting', { hello, name: data.name });
 }
 
 function Deadline({ deadline }) {
-  if (!deadline) return <Empty icon="🎈">Дедлайнов не видно — можно выдохнуть.</Empty>;
-  const kind = KINDS_GENITIVE[deadline.kind];
+  const { t } = useTranslation();
+  if (!deadline) return <Empty icon="🎈">{t('today.noDeadlines')}</Empty>;
+  const subject = deadline.subject_name;
   return (
     <>
       {deadline.days_left === 0
-        ? <p className="countdown">{`Сегодня ${KINDS[deadline.kind]} по ${deadline.subject_name}! 🌹`}</p>
+        ? <p className="countdown">{t('today.deadlineToday', { kind: t(`kinds.${deadline.kind}`), subject })}</p>
         : (
           <p className="countdown">
-            {`До ${kind} по ${deadline.subject_name} осталось `}
-            <span className="big">{deadline.days_left}</span>{' '}
-            {daysWord(deadline.days_left)}{' 🌷'}
+            {t('today.countdownBefore', { kind: t(`kindsGenitive.${deadline.kind}`), subject })}
+            <span className="big">{deadline.days_left}</span>
+            {t('today.countdownAfter', { count: deadline.days_left, kind: t(`kinds.${deadline.kind}`), subject })}
           </p>
         )}
       <span className="badge dot" style={{ '--dot': deadline.subject_color }}>{deadline.title}</span>
@@ -36,12 +36,13 @@ function Deadline({ deadline }) {
 }
 
 function HabitRow({ habit }) {
+  const { t } = useTranslation();
   const [streak, setStreak] = useState(habit.streak);
   return (
     <li>
       <HeartButton
         checked={habit.checked}
-        label={`Отметить привычку: ${habit.title}`}
+        label={t('today.checkHabit', { title: habit.title })}
         onToggle={async () => {
           const result = await api(`habits/${habit.id}/check/`, { method: 'POST' });
           setStreak(result.streak);
@@ -54,6 +55,7 @@ function HabitRow({ habit }) {
 }
 
 export default function Today() {
+  const { t } = useTranslation();
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
   const [tasks, setTasks] = useState([]);
@@ -62,7 +64,7 @@ export default function Today() {
   tasksRef.current = tasks;
   const dialog = useRef(null);
 
-  useEffect(() => { document.title = pageTitle('Сегодня'); }, []);
+  useEffect(() => { document.title = pageTitle(t('today.title')); }, [t]);
 
   useEffect(() => {
     let cancelled = false;
@@ -104,7 +106,7 @@ export default function Today() {
   let taskList;
   if (error) taskList = <Failed error={error} />;
   else if (!data) taskList = <Loading />;
-  else if (!tasks.length) taskList = <Empty icon="🌱">На сегодня задач нет. Добавь первую!</Empty>;
+  else if (!tasks.length) taskList = <Empty icon="🌱">{t('today.noTasks')}</Empty>;
   else {
     taskList = tasks.map((task) => (
       <TaskItem key={task.id} task={task} isDone={task.is_done} onChange={onChange} showDate={false}
@@ -116,38 +118,38 @@ export default function Today() {
     <>
       <div className="page-head">
         <div>
-          <h1 id="greeting">{data ? greetingFor(data) : 'Привет! 🌷'}</h1>
+          <h1 id="greeting">{data ? greetingFor(data, t) : t('today.hello')}</h1>
           <p className="muted" id="today-date">
             {data ? formatDate(data.date, { weekday: 'long', day: 'numeric', month: 'long' }) : ''}
           </p>
         </div>
-        <Link className="btn" to="/focus/?start=1">Начать помодоро 🍅</Link>
+        <Link className="btn" to="/focus/?start=1">{t('today.startPomodoro')}</Link>
       </div>
 
       {/* Order follows TZ 3.9: quote, today's tasks, deadline, habits, flower, pomodoro */}
       <div className="dashboard">
         <div className="grid">
-          <section className="panel" aria-label="Цитата дня">
+          <section className="panel" aria-label={t('today.quote')}>
             <blockquote className="quote" id="quote">
               {data ? (
                 <>
                   <p>{`«${data.quote.text}»`}</p>
                   {data.quote.author && <footer>— {data.quote.author}</footer>}
                 </>
-              ) : <p className="loading">Загружаем</p>}
+              ) : <p className="loading">{t('common.loading')}</p>}
             </blockquote>
           </section>
 
           <section className="card" aria-labelledby="tasks-title">
             <div className="panel-head">
-              <h2 id="tasks-title">Задачи на сегодня 💗</h2>
-              <span className="muted small" id="tasks-count">{tasks.length ? `${done} из ${tasks.length}` : ''}</span>
+              <h2 id="tasks-title">{t('today.tasksTitle')}</h2>
+              <span className="muted small" id="tasks-count">{tasks.length ? t('today.tasksCount', { done, total: tasks.length }) : ''}</span>
             </div>
             <form id="today-add" noValidate onSubmit={quickAdd.onSubmit}>
               <div className="capsule">
-                <label htmlFor="today-add-title" className="visually-hidden">Новая задача на сегодня</label>
-                <input type="text" id="today-add-title" name="title" maxLength="200" placeholder="Новая задача на сегодня" autoComplete="off" />
-                <button type="submit" className="btn" aria-label="Добавить задачу" disabled={quickAdd.busy}>+</button>
+                <label htmlFor="today-add-title" className="visually-hidden">{t('today.newTask')}</label>
+                <input type="text" id="today-add-title" name="title" maxLength="200" placeholder={t('today.newTask')} autoComplete="off" />
+                <button type="submit" className="btn" aria-label={t('today.addTask')} disabled={quickAdd.busy}>+</button>
               </div>
               <FormError error={quickAdd.error} />
             </form>
@@ -158,39 +160,39 @@ export default function Today() {
         <div className="grid">
           <section className="panel" aria-labelledby="deadline-title">
             <div className="panel-head">
-              <h2 id="deadline-title">Ближайший дедлайн</h2>
-              <Link className="small" to="/study/#deadlines">все →</Link>
+              <h2 id="deadline-title">{t('today.deadlineTitle')}</h2>
+              <Link className="small" to="/study/#deadlines">{t('today.all')}</Link>
             </div>
             <div id="deadline">{data && <Deadline deadline={data.next_deadline} />}</div>
           </section>
 
           <section className="panel" aria-labelledby="habits-title">
             <div className="panel-head">
-              <h2 id="habits-title">Привычки ✨</h2>
-              <Link className="small" to="/habits/">трекер →</Link>
+              <h2 id="habits-title">{t('today.habitsTitle')}</h2>
+              <Link className="small" to="/habits/">{t('today.tracker')}</Link>
             </div>
             <ul className="list" id="today-habits">
               {data && (data.habits_today.length
                 ? data.habits_today.map((habit) => <HabitRow key={habit.id} habit={habit} />)
-                : <li className="muted">Привычек пока нет. <Link to="/habits/">Создать</Link></li>)}
+                : <li className="muted">{t('today.noHabits')} <Link to="/habits/">{t('today.create')}</Link></li>)}
             </ul>
           </section>
 
           <section className="panel" aria-labelledby="flower-title">
             <div className="panel-head">
-              <h2 id="flower-title">Цветок месяца</h2>
-              <Link className="small" to="/month/">месяц →</Link>
+              <h2 id="flower-title">{t('today.flowerTitle')}</h2>
+              <Link className="small" to="/month/">{t('today.monthLink')}</Link>
             </div>
             <div id="flower">{flower && <Flower key={flower.round} {...flower} />}</div>
           </section>
 
           <section className="panel" aria-labelledby="focus-title">
-            <h2 id="focus-title">Фокус ⏳</h2>
+            <h2 id="focus-title">{t('today.focusTitle')}</h2>
             <div className="grid-2" style={{ gridTemplateColumns: '1fr 1fr', marginBottom: '12px' }}>
-              <div className="stat"><strong id="focus-today">{data ? data.focus_minutes_today : 0}</strong><span className="muted small">мин сегодня</span></div>
-              <div className="stat"><strong id="focus-week">{data ? data.focus_minutes_week : 0}</strong><span className="muted small">мин за неделю</span></div>
+              <div className="stat"><strong id="focus-today">{data ? data.focus_minutes_today : 0}</strong><span className="muted small">{t('today.minToday')}</span></div>
+              <div className="stat"><strong id="focus-week">{data ? data.focus_minutes_week : 0}</strong><span className="muted small">{t('today.minWeek')}</span></div>
             </div>
-            <Link className="btn" style={{ width: '100%' }} to="/focus/?start=1">Начать помодоро 🍅</Link>
+            <Link className="btn" style={{ width: '100%' }} to="/focus/?start=1">{t('today.startPomodoro')}</Link>
           </section>
         </div>
       </div>

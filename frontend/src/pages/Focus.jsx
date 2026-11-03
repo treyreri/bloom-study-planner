@@ -2,8 +2,10 @@
 import { useEffect, useRef, useState } from 'react';
 import 'chart.js/auto';
 import { Doughnut } from 'react-chartjs-2';
+import { useTranslation } from 'react-i18next';
+import i18n, { locale } from '../i18n.js';
 import { api, getAll } from '../api/client.js';
-import { minutesText, plural, toast } from '../lib/bloom.js';
+import { minutesText, pageTitle, toast } from '../lib/bloom.js';
 import { ConfirmButton, Empty, Failed, SubjectOptions } from '../components/ui.jsx';
 
 const CIRCLE = 2 * Math.PI * 52;       // circumference of the ring (r = 52)
@@ -12,7 +14,7 @@ const CHART_OPTIONS = {
   cutout: '62%',
   plugins: {
     legend: { display: false },
-    tooltip: { callbacks: { label: (ctx) => ` ${ctx.label}: ${ctx.parsed} ч` } },
+    tooltip: { callbacks: { label: (ctx) => i18n.t('focus.chartTooltip', { label: ctx.label, value: ctx.parsed }) } },
   },
 };
 
@@ -40,13 +42,14 @@ function beep() {
 }
 
 export default function Focus() {
+  const { t: tr } = useTranslation();   // "t" is the timer below
   const settingsRef = useRef(null);
   const [subjects, setSubjects] = useState(null);
   // phase: 'work' | 'break'; the timer uses an end timestamp so it stays
   // correct even when the browser slows down background tabs
   const timer = useRef({ phase: 'work', total: 25 * 60, remaining: 25 * 60, endsAt: null, tick: null, startedAt: null });
   const [, redraw] = useState(0);
-  const [startLabel, setStartLabel] = useState('Старт');
+  const [startLabel, setStartLabel] = useState('focus.start');   // locale key
   const [running, setRunning] = useState(false);       // settings are disabled while running
   const [subjectId, setSubjectId] = useState('');      // shown under the time
 
@@ -82,7 +85,7 @@ export default function Focus() {
     if (t.phase === 'work' && t.remaining === t.total) t.startedAt = new Date();
     t.endsAt = Date.now() + t.remaining * 1000;
     t.tick = setInterval(update, 250);
-    setStartLabel('Пауза');
+    setStartLabel('focus.pause');
     setRunning(true);
     draw();
   }
@@ -90,14 +93,14 @@ export default function Focus() {
   function pause() {
     clearInterval(t.tick);
     t.endsAt = null;
-    setStartLabel('Продолжить');
+    setStartLabel('focus.resume');
     draw();
   }
 
   function stop() {
     clearInterval(t.tick);
     t.endsAt = null;
-    setStartLabel('Старт');
+    setStartLabel('focus.start');
     setRunning(false);
   }
 
@@ -113,10 +116,10 @@ export default function Focus() {
     if (t.phase === 'work') {
       await saveSession();
       t.phase = 'break';
-      toast('Помодоро завершён! Время отдохнуть 🍵');
+      toast(i18n.t('focus.finished'));
     } else {
       t.phase = 'work';
-      toast('Перерыв окончен — снова в бой 🌷');
+      toast(i18n.t('focus.breakOver'));
     }
     resetPhase();
   }
@@ -135,7 +138,7 @@ export default function Focus() {
       loadStats();
       loadSessions();
     } catch (error) {
-      toast('Сессию не удалось сохранить: ' + error.message, 'error');
+      toast(i18n.t('focus.saveFailed', { message: error.message }), 'error');
     }
   }
 
@@ -166,7 +169,7 @@ export default function Focus() {
   // ---------- start ------------------------------------------------------
 
   useEffect(() => {
-    document.title = 'Помодоро · Bloom 🌷';
+    document.title = pageTitle(i18n.t('focus.title'));
     const state = timer.current;
     let cancelled = false;
     (async () => {
@@ -197,8 +200,8 @@ export default function Focus() {
   // the tab title shows the countdown while the timer runs
   useEffect(() => {
     document.title = t.endsAt
-      ? `${format(t.remaining)} · ${t.phase === 'work' ? 'Фокус' : 'Перерыв'} · Bloom`
-      : 'Помодоро · Bloom 🌷';
+      ? `${format(t.remaining)} · ${tr(t.phase === 'work' ? 'focus.tabWork' : 'focus.tabBreak')} · Bloom`
+      : pageTitle(tr('focus.title'));
   });
 
   // ---------- render -----------------------------------------------------
@@ -211,8 +214,11 @@ export default function Focus() {
   if (stats?.error) statsList = <Failed error={stats.error} />;
   if (stats?.data) {
     const { data } = stats;
-    statsTotal = `${stats.period === 'week' ? 'За неделю' : 'За месяц'}: ${minutesText(data.total_minutes)} · ` +
-      `${data.sessions} ${plural(data.sessions, ['сессия', 'сессии', 'сессий'])}`;
+    statsTotal = tr('focus.total', {
+      period: tr(stats.period === 'week' ? 'focus.week' : 'focus.month'),
+      time: minutesText(data.total_minutes),
+      sessions: tr('focus.sessions', { count: data.sessions }),
+    });
     chartHidden = !data.by_subject.length;
     if (!stats.error) {
       statsList = data.by_subject.length
@@ -223,24 +229,24 @@ export default function Focus() {
             <span className="num">{minutesText(row.minutes)}</span>
           </li>
         ))
-        : <Empty icon="🍅">Пока нет сессий за этот период. Запусти таймер!</Empty>;
+        : <Empty icon="🍅">{tr('focus.noStats')}</Empty>;
     }
   }
 
   let sessionList = null;
   if (sessions?.error) sessionList = <Failed error={sessions.error} />;
-  else if (sessions && !sessions.length) sessionList = <Empty icon="⏳">Сессий ещё не было.</Empty>;
+  else if (sessions && !sessions.length) sessionList = <Empty icon="⏳">{tr('focus.noSessions')}</Empty>;
   else if (sessions) {
     sessionList = sessions.slice(0, 8).map((s) => (
       <li key={s.id}>
         <span className="swatch" style={{ '--dot': s.subject_color || 'var(--soft-pink)' }} />
-        <span className="grow">{s.subject_name || 'Без предмета'}
+        <span className="grow">{s.subject_name || tr('common.noSubject')}
           <span className="small muted">{' · '}
-            {new Date(s.started_at).toLocaleString('ru-RU', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}
+            {new Date(s.started_at).toLocaleString(locale(), { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}
           </span>
         </span>
-        <span className="num small">{`${s.duration_min} мин`}</span>
-        <ConfirmButton className="icon-btn delete" aria-label="Удалить сессию" title="Удалить"
+        <span className="num small">{tr('focus.minutes', { n: s.duration_min })}</span>
+        <ConfirmButton className="icon-btn delete" aria-label={tr('focus.deleteSession')} title={tr('common.delete')}
           action={async () => { await api(`pomodoro/${s.id}/`, { method: 'DELETE' }); loadSessions(); loadStats(); }}>✕</ConfirmButton>
       </li>
     ));
@@ -262,9 +268,9 @@ export default function Focus() {
 
       <div className="grid-2">
         <section className="card" aria-labelledby="timer-title">
-          <h2 id="timer-title" className="visually-hidden">Таймер</h2>
-          <div className="chips" role="group" aria-label="Режим" style={{ justifyContent: 'center', marginBottom: '12px' }}>
-            <span className="chip" id="phase-label" aria-live="polite">{t.phase === 'work' ? 'Работа 🍅' : 'Перерыв 🍵'}</span>
+          <h2 id="timer-title" className="visually-hidden">{tr('focus.timer')}</h2>
+          <div className="chips" role="group" aria-label={tr('focus.mode')} style={{ justifyContent: 'center', marginBottom: '12px' }}>
+            <span className="chip" id="phase-label" aria-live="polite">{tr(t.phase === 'work' ? 'focus.work' : 'focus.break')}</span>
           </div>
           <div className={'timer-ring' + (t.phase === 'break' ? ' break' : '')} id="timer-ring">
             <svg viewBox="0 0 120 120" aria-hidden="true">
@@ -275,60 +281,60 @@ export default function Focus() {
             </svg>
             <div className="time">
               <strong id="timer-time" role="timer" aria-live="off">{format(t.remaining)}</strong>
-              <span className="muted small" id="timer-subject">{subject ? subject.name : 'без предмета'}</span>
+              <span className="muted small" id="timer-subject">{subject ? subject.name : tr('focus.noSubject')}</span>
             </div>
           </div>
           <div className="timer-controls">
-            <button type="button" className="btn big" id="timer-start" onClick={() => (t.endsAt ? pause() : start())}>{startLabel}</button>
-            <button type="button" className="btn ghost" id="timer-reset" onClick={() => { stop(); resetPhase(); }}>Сброс</button>
+            <button type="button" className="btn big" id="timer-start" onClick={() => (t.endsAt ? pause() : start())}>{tr(startLabel)}</button>
+            <button type="button" className="btn ghost" id="timer-reset" onClick={() => { stop(); resetPhase(); }}>{tr('focus.reset')}</button>
             <button type="button" className="btn ghost" id="timer-skip" onClick={() => {
               stop();
               t.phase = t.phase === 'work' ? 'break' : 'work';
               resetPhase();
-            }}>Пропустить</button>
+            }}>{tr('focus.skip')}</button>
           </div>
 
           <form id="timer-settings" style={{ marginTop: '18px' }} noValidate ref={settingsRef}>
             <div className="field">
-              <label htmlFor="timer-subject-select">Предмет</label>
+              <label htmlFor="timer-subject-select">{tr('common.subject')}</label>
               <select id="timer-subject-select" name="subject" disabled={running}>
                 {subjects && <SubjectOptions subjects={subjects} />}
               </select>
             </div>
             <div className="field-row">
               <div className="field">
-                <label htmlFor="work-min">Работа, мин</label>
+                <label htmlFor="work-min">{tr('focus.workMin')}</label>
                 <input type="number" id="work-min" name="work" min="1" max="180" defaultValue="25" disabled={running} />
               </div>
               <div className="field">
-                <label htmlFor="break-min">Перерыв, мин</label>
+                <label htmlFor="break-min">{tr('focus.breakMin')}</label>
                 <input type="number" id="break-min" name="break" min="1" max="60" defaultValue="5" disabled={running} />
               </div>
             </div>
             <label style={{ display: 'flex', gap: '8px', alignItems: 'center', color: 'var(--text)' }}>
               <input type="checkbox" id="demo-mode" name="demo" style={{ width: 'auto', minHeight: 0 }} disabled={running} />
-              Демо-режим: 10 секунд (сохраняется как 1 минута)
+              {tr('focus.demo')}
             </label>
           </form>
         </section>
 
         <section className="panel" aria-labelledby="stats-title">
           <div className="panel-head">
-            <h2 id="stats-title">Статистика</h2>
-            <div className="chips" role="group" aria-label="Период">
-              <button type="button" className="chip" data-period="week" aria-pressed={String(period === 'week')} onClick={() => choosePeriod('week')}>Неделя</button>
-              <button type="button" className="chip" data-period="month" aria-pressed={String(period === 'month')} onClick={() => choosePeriod('month')}>Месяц</button>
+            <h2 id="stats-title">{tr('focus.stats')}</h2>
+            <div className="chips" role="group" aria-label={tr('focus.period')}>
+              <button type="button" className="chip" data-period="week" aria-pressed={String(period === 'week')} onClick={() => choosePeriod('week')}>{tr('focus.periodWeek')}</button>
+              <button type="button" className="chip" data-period="month" aria-pressed={String(period === 'month')} onClick={() => choosePeriod('month')}>{tr('focus.periodMonth')}</button>
             </div>
           </div>
           <p className="muted" id="stats-total">{statsTotal}</p>
           <div style={{ position: 'relative', maxWidth: '300px', margin: '0 auto' }} id="chart-wrap" hidden={chartHidden}>
             {chart
-              ? <Doughnut id="stats-chart" aria-label="Минуты по предметам" role="img" data={chart} options={CHART_OPTIONS} />
-              : <canvas id="stats-chart" aria-label="Минуты по предметам" role="img"></canvas>}
+              ? <Doughnut id="stats-chart" aria-label={tr('focus.chart')} role="img" data={chart} options={CHART_OPTIONS} />
+              : <canvas id="stats-chart" aria-label={tr('focus.chart')} role="img"></canvas>}
           </div>
           <ul className="list" id="stats-list" style={{ marginTop: '10px' }}>{statsList}</ul>
 
-          <h3 style={{ marginTop: '18px' }}>Последние сессии</h3>
+          <h3 style={{ marginTop: '18px' }}>{tr('focus.recent')}</h3>
           <ul className="list" id="session-list">{sessionList}</ul>
         </section>
       </div>

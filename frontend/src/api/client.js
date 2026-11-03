@@ -7,6 +7,8 @@
    (401) the refresh token is used once to get a new pair; if that fails
    the user is logged out and sent to the login page.
    ========================================================================== */
+import i18n, { serverMessage } from '../i18n.js';
+
 const API = '/api/v1/';
 const ACCESS = 'bloom.access';
 const REFRESH = 'bloom.refresh';
@@ -32,23 +34,17 @@ export class ApiError extends Error {
   }
 }
 
-const FIELD_NAMES = {
-  title: 'Название', date: 'Дата', name: 'Название', due_date: 'Дата',
-  start_time: 'Начало', end_time: 'Конец', week_start: 'Неделя', mood: 'Настроение',
-  subject: 'Предмет', month_plan: 'Месяц', duration_min: 'Длительность',
-  focus_goals: 'Фокус-цели', color: 'Цвет', avatar: 'Аватар', year: 'Год', month: 'Месяц',
-};
-
-/** Turn a DRF error body into one readable sentence. */
+/** Turn a DRF error body into one readable sentence (in the current language). */
 function errorMessage(data) {
-  if (!data) return 'Что-то пошло не так. Попробуйте ещё раз.';
-  if (typeof data === 'string') return data;
+  if (!data) return i18n.t('errors.generic');
+  if (typeof data === 'string') return serverMessage(data);
   if (Array.isArray(data)) return data.map(errorMessage).join(' ');
-  if (data.detail) return String(data.detail);
+  if (data.detail) return serverMessage(String(data.detail));
+  const fieldNames = i18n.t('errors.fields', { returnObjects: true });
   return Object.entries(data)
     .map(([field, messages]) => {
-      const text = Array.isArray(messages) ? messages.join(' ') : errorMessage(messages);
-      return field === 'non_field_errors' ? text : `${FIELD_NAMES[field] || field}: ${text}`;
+      const text = Array.isArray(messages) ? messages.map(errorMessage).join(' ') : errorMessage(messages);
+      return field === 'non_field_errors' ? text : `${fieldNames[field] || field}: ${text}`;
     })
     .join(' ');
 }
@@ -108,12 +104,12 @@ export async function api(path, { method = 'GET', body, formData } = {}) {
       response = await send(url, method, payload, headers);
     }
   } catch {
-    throw new ApiError('Нет связи с сервером. Проверьте интернет.', 0, null);
+    throw new ApiError(i18n.t('errors.network'), 0, null);
   }
 
   if (response.status === 401) {
     redirectToLogin();
-    throw new ApiError('Нужно войти снова.', 401, null);
+    throw new ApiError(i18n.t('errors.loginAgain'), 401, null);
   }
   if (response.status === 204) return null;
 
@@ -122,7 +118,7 @@ export async function api(path, { method = 'GET', body, formData } = {}) {
   if (type.includes('application/json')) data = await response.json();
 
   if (!response.ok) {
-    const message = response.status === 404 ? 'Не найдено.' : errorMessage(data);
+    const message = response.status === 404 ? i18n.t('errors.notFound') : errorMessage(data);
     throw new ApiError(message, response.status, data);
   }
   return data;
