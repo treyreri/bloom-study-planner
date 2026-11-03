@@ -2,7 +2,9 @@
 #
 # Shared server: everything is prefixed with the project name "bloom-muna"
 # (containers, volumes, network), and the only published port is 127.0.0.1:8038.
-# Start:  sudo docker compose up -d --build        (see DEPLOY.md)
+# Server: images are prebuilt by GitHub Actions (.github/workflows/docker.yml) and pulled:
+#         sudo docker compose pull backend nginx-frontend && sudo docker compose up -d --no-build
+# Local:  docker compose up --build                 (see DEPLOY.md)
 # Values come from .env (see .env.example / DEPLOY.md).
 
 name: bloom-muna
@@ -32,7 +34,8 @@ services:
       retries: 10
 
   backend:
-    build: .
+    image: ghcr.io/treyreri/bloom-muna-backend:latest   # built by GitHub Actions; the server only pulls it
+    build: .                                             # used by a local `docker compose up --build`
     restart: unless-stopped
     logging: *logging
     environment:
@@ -71,7 +74,8 @@ services:
       - backend
 
   nginx-frontend:
-    build: ./frontend
+    image: ghcr.io/treyreri/bloom-muna-frontend:latest  # built by GitHub Actions; the server only pulls it
+    build: ./frontend                                    # used by a local `docker compose up --build`
     restart: unless-stopped
     logging: *logging
     volumes:

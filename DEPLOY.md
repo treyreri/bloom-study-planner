@@ -46,11 +46,12 @@ SECURE_COOKIES=False
 EOF
 chmod 600 .env
 
-# check free disk first (needs roughly 1.5 GB for images + build)
+# check free disk first (the pulled images need roughly 450 MB; nothing is built here)
 df -h ~
 
-# build and start (first build takes a few minutes)
-sudo docker compose up -d --build
+# download the prebuilt images and start — never build on the server
+sudo docker compose pull
+sudo docker compose up -d --no-build
 
 # all four containers should be "running" / db "healthy"
 sudo docker compose ps
@@ -81,14 +82,44 @@ sudo docker compose exec backend python manage.py seed_demo
 
 ## 2. Updating after a new push to GitHub
 
+The server never builds images. Every push to `main` makes GitHub Actions
+(`.github/workflows/docker.yml`) build and publish two images:
+
+- `ghcr.io/treyreri/bloom-muna-backend` (tags `latest` and the commit SHA)
+- `ghcr.io/treyreri/bloom-muna-frontend` (tags `latest` and the commit SHA)
+
+Wait until that run is green (repository → **Actions** → "Docker images"), then:
+
 ```bash
 cd ~/bloom-muna
-git pull
-sudo docker compose up -d --build
+git pull                                          # compose file + nginx configs
+sudo docker compose pull backend nginx-frontend   # the new prebuilt images
+sudo docker compose up -d --no-build              # recreate only what changed
 sudo docker compose ps
+
+# remove only bloom-muna's old, now untagged (dangling) images
+sudo docker image ls -q --filter dangling=true \
+     --filter label=org.opencontainers.image.source=https://github.com/treyreri/bloom-study-planner \
+  | xargs -r sudo docker image rm
 ```
 
 Migrations and `collectstatic` run automatically when the backend container starts.
+Never use `--build` and never run any `docker … prune` on the server.
+
+To go back to an earlier version, put its commit SHA instead of `latest` for the two images in
+`docker-compose.yml` (e.g. `ghcr.io/treyreri/bloom-muna-backend:<sha>`) and run the pull/up commands.
+
+### Once: switching from images built on the server
+
+Images built on the server earlier are named `bloom-muna-backend` and `bloom-muna-nginx-frontend`.
+After the first `pull` + `up -d --no-build` above they are no longer used; remove exactly these two
+(and their leftover dangling layers) to free the disk:
+
+```bash
+sudo docker image rm bloom-muna-backend bloom-muna-nginx-frontend
+sudo docker image ls -q --filter dangling=true --filter label=com.docker.compose.project=bloom-muna \
+  | xargs -r sudo docker image rm
+```
 
 ## 3. Everyday commands (always inside ~/bloom-muna)
 
@@ -116,11 +147,11 @@ sudo docker compose exec -T db pg_dump -U bloom bloom > ~/bloom-backup-$(date +%
 ```bash
 df -h ~
 sudo docker system df                           # shows usage, deletes nothing
-sudo docker images --filter label=com.docker.compose.project=bloom-muna
+sudo docker images 'ghcr.io/treyreri/bloom-muna-*'   # our images (old ones show TAG <none>)
 ```
 
-After several rebuilds, old images of **this** project can be removed one by one by their IMAGE ID
-from the list above (only `<none>` entries of bloom-muna):
+The cleanup command in section 2 already removes our old images after each update. If one is left,
+remove it by its IMAGE ID from the list above (only `<none>` entries of `bloom-muna-*`):
 
 ```bash
 sudo docker image rm <IMAGE_ID>
