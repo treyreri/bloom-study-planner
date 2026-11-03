@@ -47,7 +47,7 @@ export const stageLabel = (stage) => i18n.t(`stages.${stage}`);
 
 // ---------- feedback (plain DOM, outside React, exactly as before) --------
 
-export function toast(message, type = 'info') {
+export function toast(message, type = 'info', duration = null) {
   let box = document.querySelector('.toasts');
   if (!box) {
     box = document.createElement('div');
@@ -60,7 +60,7 @@ export function toast(message, type = 'info') {
   item.className = 'toast' + (type === 'error' ? ' error' : '');
   item.textContent = message;
   box.append(item);
-  setTimeout(() => item.remove(), type === 'error' ? 5000 : 2600);
+  setTimeout(() => item.remove(), duration || (type === 'error' ? 5000 : 2600));
 }
 
 export function confetti() {
@@ -99,4 +99,10 @@ export function formValues(form) {
 /** document.title in the same format as the old base.html */
 export function pageTitle(title) {
   return i18n.t('common.pageTitle', { title });
+}
+
+/** Tells the notification bell that tasks or deadlines changed. */
+export const DATA_CHANGED = 'bloom:data-changed';
+export function notifyDataChanged() {
+  window.dispatchEvent(new Event(DATA_CHANGED));
 }

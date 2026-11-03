@@ -2,7 +2,7 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 
 from accounts.views import ProfileView
-from .views import DashboardStatsView, ServerDateView
+from .views import DashboardStatsView, NotificationsView, ServerDateView
 from planner.views import MonthPlanViewSet, TaskViewSet, QuoteViewSet
 from study.views import SubjectViewSet, DeadlineViewSet, ScheduleSlotViewSet
 from habits.views import HabitViewSet, HabitCheckViewSet
@@ -37,5 +37,6 @@ urlpatterns = [
     path("profile/", ProfileView.as_view(), name="profile"),
     path("dashboard/", DashboardStatsView.as_view(), name="dashboard"),
     path("server-date/", ServerDateView.as_view(), name="server-date"),
+    path("notifications/", NotificationsView.as_view(), name="notifications"),
     path('', include(router.urls)),
 ]

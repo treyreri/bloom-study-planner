@@ -7,6 +7,7 @@ from rest_framework.test import APITestCase
 from focus.models import PomodoroSession
 from habits.models import Habit, HabitCheck
 from planner.models import MonthPlan, Quote, Task
+from planner.services import get_or_create_month_plan
 from study.models import Deadline, Subject
 
 User = get_user_model()
@@ -90,3 +91,70 @@ class ServerDateTests(APITestCase):
 
     def test_requires_login(self):
         self.assertEqual(self.client.get('/api/v1/server-date/').status_code, 401)
+
+
+class NotificationsTests(APITestCase):
+    def setUp(self):
+        self.alice = User.objects.create_user('alice')
+        self.bob = User.objects.create_user('bob')
+        self.today = timezone.localdate()
+        self.client.force_authenticate(self.alice)
+
+    def deadline(self, user, days, title):
+        subject, _ = Subject.objects.get_or_create(user=user, name='SQL')
+        return Deadline.objects.create(user=user, subject=subject, title=title, kind='test',
+                                       due_date=self.today + timedelta(days=days))
+
+    def task(self, user, days, title, done=False):
+        day = self.today + timedelta(days=days)
+        return Task.objects.create(user=user, title=title, is_done=done, date=day,
+                                   month_plan=get_or_create_month_plan(user, day))
+
+    def test_requires_login(self):
+        self.client.force_authenticate(None)
+        self.assertEqual(self.client.get('/api/v1/notifications/').status_code, 401)
+
+    def test_empty(self):
+        data = self.client.get('/api/v1/notifications/').data
+        self.assertEqual(data['date'], self.today)
+        for key in ('upcoming_deadlines', 'overdue_deadlines', 'overdue_tasks', 'today_tasks'):
+            self.assertEqual(data[key], [])
+        self.assertEqual(data['overdue_tasks_count'], 0)
+
+    def test_groups(self):
+        self.deadline(self.alice, 2, 'Зачёт скоро')
+        self.deadline(self.alice, 0, 'Сегодня')
+        self.deadline(self.alice, 30, 'Далеко')            # beyond 14 days: not shown
+        self.deadline(self.alice, -3, 'Прошёл')
+        self.deadline(self.alice, -10, 'Давно прошёл')     # older than a week: not shown
+        self.task(self.alice, -2, 'Просрочена')
+        self.task(self.alice, -1, 'Сделана', done=True)
+        self.task(self.alice, 0, 'Сегодня открыта')
+        self.task(self.alice, 0, 'Сегодня сделана', done=True)
+        self.task(self.alice, 1, 'Завтра')
+
+        data = self.client.get('/api/v1/notifications/').data
+        titles = lambda key: [item['title'] for item in data[key]]
+        self.assertEqual(titles('upcoming_deadlines'), ['Сегодня', 'Зачёт скоро'])
+        self.assertEqual([d['days_left'] for d in data['upcoming_deadlines']], [0, 2])
+        self.assertEqual(titles('overdue_deadlines'), ['Прошёл'])
+        self.assertEqual(titles('overdue_tasks'), ['Просрочена'])
+        self.assertEqual(data['overdue_tasks_count'], 1)
+        self.assertEqual(titles('today_tasks'), ['Сегодня открыта'])
+
+    def test_user_a_does_not_see_user_b(self):
+        self.deadline(self.bob, 1, 'Дедлайн Боба')
+        self.deadline(self.bob, -1, 'Прошедший Боба')
+        self.task(self.bob, -1, 'Просрочка Боба')
+        self.task(self.bob, 0, 'Задача Боба')
+        self.deadline(self.alice, 1, 'Дедлайн Алисы')
+
+        data = self.client.get('/api/v1/notifications/').data
+        self.assertEqual([d['title'] for d in data['upcoming_deadlines']], ['Дедлайн Алисы'])
+        self.assertEqual(data['overdue_deadlines'], [])
+        self.assertEqual(data['overdue_tasks'], [])
+        self.assertEqual(data['overdue_tasks_count'], 0)
+        self.assertEqual(data['today_tasks'], [])
+
+    def test_read_only(self):
+        self.assertEqual(self.client.post('/api/v1/notifications/', {}).status_code, 405)

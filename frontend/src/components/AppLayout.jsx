@@ -1,7 +1,7 @@
 /*
   Layout of every page after login (the old templates/app.html):
   sidebar on desktop, bottom bar with 5 icons + "Ещё" sheet on phones.
-  A slim top bar holds the RU | EN switch.
+  A slim top bar holds the RU | EN switch (and the notification bell on Today).
 */
 import { useEffect, useState } from 'react';
 import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
@@ -10,6 +10,7 @@ import { logout } from '../api/client.js';
 import { useAuth } from '../auth.jsx';
 import heartMid from '../img/hearts/heart-mid.svg';
 import LangSwitch from './LangSwitch.jsx';
+import NotificationBell from './Notifications.jsx';
 
 // (path, label key, icon, shown in the mobile bottom bar?)
 export const NAV_ITEMS = [
@@ -94,6 +95,7 @@ export default function AppLayout({ children }) {
 
         <main className="main" id="main">
           <div className="app-top">
+            {location.pathname === '/today/' && <NotificationBell />}
             <LangSwitch />
           </div>
           {children}

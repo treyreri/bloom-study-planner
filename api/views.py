@@ -84,3 +84,41 @@ class ServerDateView(APIView):
     @extend_schema(responses=OpenApiTypes.OBJECT)
     def get(self, request):
         return Response({'date': timezone.localdate()})
+
+
+# deadlines have no "done" flag: one that passed less than a week ago is still shown as overdue
+OVERDUE_DEADLINE_DAYS = 7
+UPCOMING_DEADLINE_DAYS = 14
+OVERDUE_TASKS_LIMIT = 20
+
+
+class NotificationsView(APIView):
+    """The bell on the "Today" page: upcoming and overdue deadlines, overdue and today's open tasks."""
+    permission_classes = [IsAuthenticated]
+
+    @extend_schema(responses=OpenApiTypes.OBJECT)
+    def get(self, request):
+        user = request.user
+        today = timezone.localdate()
+        deadlines = Deadline.objects.filter(user=user).select_related('subject')
+        upcoming = deadlines.filter(
+            due_date__gte=today,
+            due_date__lte=today + timedelta(days=UPCOMING_DEADLINE_DAYS)).order_by('due_date')
+        overdue = deadlines.filter(
+            due_date__lt=today,
+            due_date__gte=today - timedelta(days=OVERDUE_DEADLINE_DAYS)).order_by('-due_date')
+
+        open_tasks = user.tasks.filter(is_done=False).select_related('subject')
+        overdue_tasks = open_tasks.filter(date__lt=today).order_by('date', 'created_at')
+        today_tasks = open_tasks.filter(date=today).order_by('created_at')
+
+        context = {'request': request}
+        return Response({
+            'date': today,
+            'upcoming_deadlines': DeadlineSerializer(upcoming, many=True, context=context).data,
+            'overdue_deadlines': DeadlineSerializer(overdue, many=True, context=context).data,
+            'overdue_tasks': TaskSerializer(
+                overdue_tasks[:OVERDUE_TASKS_LIMIT], many=True, context=context).data,
+            'overdue_tasks_count': overdue_tasks.count(),
+            'today_tasks': TaskSerializer(today_tasks, many=True, context=context).data,
+        })

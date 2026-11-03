@@ -79,18 +79,18 @@ DRF PROJECT/
 ├── habits/                 # Habit, HabitCheck, streak (services.py)
 ├── focus/                  # PomodoroSession, statistics
 ├── diary/                  # WeeklyReflection
-├── api/                    # router, IsOwner permission, dashboard and server-date views
+├── api/                    # router, IsOwner permission, dashboard, server-date, notifications views
 ├── frontend/               # React app (Vite)
 │   ├── src/api/client.js       # fetch wrapper: /api/v1, JWT header, refresh on 401
 │   ├── src/auth.jsx            # current user (profile), protected routes
 │   ├── src/components/         # layout, task row + edit dialog, heart checkbox, flower,
-│   │                           # RU | EN switch
+│   │                           # notification bell, RU | EN switch
 │   ├── src/i18n.js             # react-i18next setup (language saved in localStorage)
 │   ├── src/locales/            # ru.json, en.json: every interface text
 │   ├── src/pages/              # Home, Login, Register, Today, Month, Tasks, Study,
 │   │                           # Habits, Focus, Diary, Garden, Profile
 │   ├── src/css/bloom.css       # design system
-│   ├── src/css/bloom-extra.css # styles of the language switch
+│   ├── src/css/bloom-extra.css # styles of the bell and the language switch
 │   ├── src/img/hearts/         # pixel heart stickers
 │   └── Dockerfile              # npm ci && npm run build → nginx
 ├── nginx/                  # frontend.conf, backend.conf, proxy_django.inc
@@ -218,13 +218,14 @@ In Swagger: call `POST /api/v1/auth/token/`, press **Authorize** and paste the `
 | GET | `/pomodoro/stats/?period=week` | Minutes per subject and per day (`week` or `month`), computed with `Sum` / `TruncDate` |
 | CRUD | `/reflections/` | Weekly reflections |
 | GET | `/dashboard/` | Everything for the Today page in one request |
+| GET | `/notifications/` | The bell: deadlines in the next 14 days, deadlines missed in the last 7 days, overdue open tasks (first 20 + count), today's open tasks |
 
 ---
 
 ## Tests and checks
 
 ```powershell
-python manage.py test                                   # 94 tests
+python manage.py test                                   # 100 tests
 python manage.py check
 python manage.py makemigrations --check --dry-run
 python manage.py spectacular --validate --fail-on-warn --file "$env:TEMP\bloom-openapi.yml"
@@ -257,6 +258,7 @@ dashboard numbers, Pomodoro statistics and demo data.
 | Quote of the day | Same quote all day: `quotes[day_number % count]`; a built-in quote is shown if the list is empty. |
 | Admin reference data | Only `Quote` is a reference model (the spec's model list has no icon/flower models). |
 | Language and fonts | Russian by default, English with the RU \| EN switch (react-i18next, choice saved in `localStorage`, `<html lang>` follows it). User data and the quote of the day are not translated; Django's own error messages are mapped to English for the common cases. Headings use the spec's English titles ("To-do List 🌷", "My Month 🗓️", "Habits ✨") in both languages. Patrick Hand has no Cyrillic, so Neucha (Cyrillic handwriting) is the fallback; Quicksand for numbers. |
+| Notifications | A bell on the Today page counts deadlines due within 3 days, deadlines missed in the last week (deadlines have no "done" flag), overdue tasks and today's open tasks. The nearest deadline within 3 days also shows a toast once per day (remembered in `localStorage`). The list reloads after task/deadline changes and when the window gets focus; no push notifications, e-mails or background jobs. |
 | Mobile menu | 5 icons: Today, Month, Tasks, Focus and "Ещё" (Study, Habits, Diary, Garden, Profile, Logout). |
 | Pagination | Default page size 20 for all lists (the frontend follows `next` links where it needs everything). |
 

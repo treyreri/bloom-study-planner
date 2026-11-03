@@ -363,6 +363,24 @@
     "devHow2": " with your username and password, click “Authorize” and paste the ",
     "devHow3": " value from the response (Swagger adds the word Bearer itself)."
   },
+  "notifications": {
+    "bell": "Notifications",
+    "bellCount": "Notifications: {{count}}",
+    "title": "Notifications 🔔",
+    "upcoming": "Upcoming deadlines",
+    "overdue": "Overdue",
+    "todayTasks": "Today's tasks",
+    "empty": "All calm — no notifications 🌷",
+    "daysLeft_one": "{{count}} day left",
+    "daysLeft_other": "{{count}} days left",
+    "dueToday": "today! 🌹",
+    "overdueBy_one": "{{count}} day overdue",
+    "overdueBy_other": "{{count}} days overdue",
+    "moreOverdue": "and {{count}} more →",
+    "warnToday": "⚠️ The {{subject}} {{kind}} is today! 🌹",
+    "warn_one": "⚠️ {{count}} day left until the {{subject}} {{kind}} 🌷",
+    "warn_other": "⚠️ {{count}} days left until the {{subject}} {{kind}} 🌷"
+  },
   "errors": {
     "generic": "Something went wrong. Please try again.",
     "network": "No connection to the server. Check your internet.",

@@ -8,6 +8,7 @@
    the user is logged out and sent to the login page.
    ========================================================================== */
 import i18n, { serverMessage } from '../i18n.js';
+import { notifyDataChanged } from '../lib/bloom.js';
 
 const API = '/api/v1/';
 const ACCESS = 'bloom.access';
@@ -111,7 +112,11 @@ export async function api(path, { method = 'GET', body, formData } = {}) {
     redirectToLogin();
     throw new ApiError(i18n.t('errors.loginAgain'), 401, null);
   }
-  if (response.status === 204) return null;
+  const changesBell = method !== 'GET' && /^(tasks|deadlines)\//.test(path);
+  if (response.status === 204) {
+    if (changesBell) notifyDataChanged();
+    return null;
+  }
 
   let data = null;
   const type = response.headers.get('Content-Type') || '';
@@ -121,6 +126,7 @@ export async function api(path, { method = 'GET', body, formData } = {}) {
     const message = response.status === 404 ? i18n.t('errors.notFound') : errorMessage(data);
     throw new ApiError(message, response.status, data);
   }
+  if (changesBell) notifyDataChanged();
   return data;
 }
 
